@@ -24,45 +24,103 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="/">Family Budget</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+    
+    <!-- Логотип -->
+    <a class="navbar-brand" href="/">
+      Family Budget
+    </a>
+
+    <!-- Мобильная кнопка -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNavbar"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="mainNavbar">
+
+      <!-- Левое меню -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
         <% if (user) { %>
+
           <li class="nav-item">
-            <a class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>" href="/">Дашборд</a>
+            <a
+              class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>"
+              href="/"
+            >
+              Дашборд
+            </a>
           </li>
+
           <li class="nav-item">
-            <a class="nav-link <%= activePage === 'transactions' ? 'active' : '' %>" href="/transactions">Транзакции</a>
+            <a
+              class="nav-link <%= activePage === 'transactions' ? 'active' : '' %>"
+              href="/transactions"
+            >
+              Транзакции
+            </a>
           </li>
+
           <li class="nav-item">
-            <a class="nav-link <%= activePage === 'categories' ? 'active' : '' %>" href="/categories">Категории</a>
+            <a
+              class="nav-link <%= activePage === 'categories' ? 'active' : '' %>"
+              href="/categories"
+            >
+              Категории
+            </a>
           </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link <%= activePage === 'family' ? 'active' : '' %>"
+              href="/family"
+              title="Участники семьи"
+            >
+              <i class="bi bi-people me-1"></i>
+              Семья
+            </a>
+          </li>
+
         <% } %>
+
       </ul>
 
+      <!-- Правое меню -->
       <ul class="navbar-nav ms-auto">
+
         <% if (user) { %>
+
           <li class="nav-item">
             <span class="navbar-text me-2">
+              <i class="bi bi-person-circle me-1"></i>
               <%= user.email %>
             </span>
           </li>
+
           <li class="nav-item">
-            <a class="btn btn-outline-light btn-sm" href="/logout">Выход</a>
+            <a class="btn btn-outline-light btn-sm" href="/logout">
+              Выйти
+            </a>
           </li>
+
         <% } else { %>
+
           <li class="nav-item me-2">
             <a class="btn btn-outline-light btn-sm" href="/login">Вход</a>
           </li>
+
           <li class="nav-item">
             <a class="btn btn-success btn-sm" href="/register">Регистрация</a>
           </li>
+
         <% } %>
+
       </ul>
+
     </div>
   </div>
 </nav>

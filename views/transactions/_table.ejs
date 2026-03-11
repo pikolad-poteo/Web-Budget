@@ -41,13 +41,7 @@
                 <td><%= t.description || '' %></td>
 
                 <td>
-                  <% if (t.who === 'me') { %>
-                    Я
-                  <% } else if (t.who === 'girlfriend') { %>
-                    Девушка
-                  <% } else { %>
-                    Общая
-                  <% } %>
+                  <%- t.who || '' %>
                 </td>
 
                 <td class="text-end">

@@ -6,6 +6,7 @@ const {
   loginUser,
   getUserFamilyId,
   getFamilyMainAccountId,
+  ensureFamilyAndAccountForUser,
 } = require('./src/auth');
 const { attachUser, requireLogin } = require('./src/middleware');
 const pool = require('./src/db');
@@ -38,11 +39,21 @@ app.get('/', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
-  const familyId = await getUserFamilyId(userId);
-  const accountId = await getFamilyMainAccountId(familyId);
+  // гарантируем, что у пользователя есть семья и основной счёт
+  const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
 
+  // если по каким-то причинам всё равно не получилось — просто отправим на /family
   if (!familyId || !accountId) {
-    return res.send('Не найдены семья или счёт.');
+    return res.redirect('/family');
+  }
+
+  // 👉 если у семьи ещё нет участников — отправляем на настройку семьи
+  const [memberCountRows] = await pool.execute(
+    'SELECT COUNT(*) AS cnt FROM family_members WHERE family_id = ?',
+    [familyId]
+  );
+  if (memberCountRows[0].cnt === 0) {
+    return res.redirect('/family');
   }
 
   // Баланс (все транзакции по счёту)
@@ -135,7 +146,7 @@ app.get('/', requireLogin, async (req, res) => {
         : 0,
   }));
 
-    res.render('dashboard/index', {
+  res.render('dashboard/index', {
     user,
     balance,
     income,
@@ -155,11 +166,18 @@ app.post('/register', async (req, res) => {
   const { email, password, name } = req.body;
   const result = await registerUser(email, password, name);
 
-  if (result === true) {
-    return res.redirect('/login');
-  } else {
-    return res.render('register', { message: result });
+  // успешная регистрация
+  if (result && result.success) {
+    // сразу логиним пользователя
+    req.session.userId = result.userId;
+    // и отправляем на страницу настройки семьи
+    return res.redirect('/family');
   }
+
+  // если result — строка с ошибкой, показываем её
+  return res.render('register', {
+    message: typeof result === 'string' ? result : 'Ошибка при регистрации.',
+  });
 });
 
 // ---------- Логин ----------
@@ -186,6 +204,111 @@ app.get('/logout', (req, res) => {
   });
 });
 
+// ============ СЕМЬЯ ============
+
+// Страница редактирования семьи (название + участники)
+app.get('/family', requireLogin, async (req, res) => {
+  const user = req.user;
+  const userId = user.id;
+
+  // гарантируем наличие семьи и счёта
+  const { familyId } = await ensureFamilyAndAccountForUser(userId);
+
+  // имя семьи
+  const [famRows] = await pool.execute(
+    'SELECT name FROM families WHERE id = ? LIMIT 1',
+    [familyId]
+  );
+  const familyName = famRows.length > 0 ? famRows[0].name : '';
+
+  // участники семьи
+  const [members] = await pool.execute(
+    `
+    SELECT id, name, is_owner
+    FROM family_members
+    WHERE family_id = ?
+    ORDER BY id ASC
+    `,
+    [familyId]
+  );
+
+  const initialMembers =
+    members.length > 0
+      ? members
+      : [{ id: null, name: user.name || user.email, is_owner: 1 }];
+
+  res.render('family/index', {
+    user,
+    familyName,
+    members: initialMembers,
+    activePage: 'family',
+  });
+});
+
+// Сохранение состава семьи + имени семьи
+app.post('/family', requireLogin, async (req, res) => {
+  const user = req.user;
+  const userId = user.id;
+
+  const { familyId } = await ensureFamilyAndAccountForUser(userId);
+
+  let { family_name } = req.body;
+  let names = req.body.names || [];
+
+  if (!Array.isArray(names)) {
+    names = [names];
+  }
+
+  family_name = (family_name || '').trim();
+  if (!family_name) {
+    family_name = user.name || user.email || 'Наша семья';
+  }
+
+  // Чистим имена участников
+  names = names
+    .map((n) => String(n || '').trim())
+    .filter((n) => n.length > 0);
+
+  if (names.length === 0) {
+    // хотя бы один участник должен быть
+    names = [user.name || user.email || 'Я'];
+  }
+
+  try {
+    // 1) Обновляем имя семьи
+    await pool.execute('UPDATE families SET name = ? WHERE id = ?', [
+      family_name,
+      familyId,
+    ]);
+
+    // 2) Удаляем старый состав семьи
+    await pool.execute('DELETE FROM family_members WHERE family_id = ?', [
+      familyId,
+    ]);
+
+    // 3) Вставляем новых участников
+    const ownerName = user.name || user.email;
+
+    for (let i = 0; i < names.length; i++) {
+      const name = names[i];
+      const isOwner = name === ownerName ? 1 : 0;
+
+      await pool.execute(
+        `
+        INSERT INTO family_members (family_id, user_id, name, is_owner)
+        VALUES (?, ?, ?, ?)
+        `,
+        [familyId, userId, name, isOwner]
+      );
+    }
+
+    res.redirect('/');
+  } catch (err) {
+    console.error('Error saving family:', err);
+    res.status(500).send('Ошибка при сохранении семьи.');
+  }
+});
+
 // ============ ТРАНЗАКЦИИ ============
 
 // Страница со списком и формой
@@ -193,8 +316,23 @@ app.get('/transactions', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
-  const familyId = await getUserFamilyId(userId);
-  const accountId = await getFamilyMainAccountId(familyId);
+  const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
+
+  // участники семьи
+  const [memberRows] = await pool.execute(
+    `
+    SELECT id, name
+    FROM family_members
+    WHERE family_id = ?
+    ORDER BY id ASC
+    `,
+    [familyId]
+  );
+
+  // если нет участников, отправляем на /family
+  if (memberRows.length === 0) {
+    return res.redirect('/family');
+  }
 
   const { from, to, category_id } = req.query;
 
@@ -249,6 +387,7 @@ app.get('/transactions', requireLogin, async (req, res) => {
     user,
     transactions: txRows,
     categories: catRows,
+    members: memberRows,
     filters: {
       from: fromDate,
       to: toDate,
@@ -263,8 +402,7 @@ app.post('/transactions', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
-  const familyId = await getUserFamilyId(userId);
-  const accountId = await getFamilyMainAccountId(familyId);
+  const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
 
   const { date, amount, category_id, description, type, who } = req.body;
 
@@ -273,11 +411,7 @@ app.post('/transactions', requireLogin, async (req, res) => {
     value = -value;
   }
 
-  // пока у тебя в форме обычный текст, но логика ниже оставлена
-  const whoValue =
-    who === 'me' || who === 'girlfriend' || who === 'shared'
-      ? who
-      : (who || 'shared');
+  const whoValue = (who || '').trim() || null;
 
   await pool.execute(
     `
@@ -294,12 +428,11 @@ app.post('/transactions', requireLogin, async (req, res) => {
 // ============ КАТЕГОРИИ ============
 
 // Страница категорий
-// ---------- КАТЕГОРИИ: список ----------
 app.get('/categories', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
-  const familyId = await getUserFamilyId(userId);
+  const { familyId } = await ensureFamilyAndAccountForUser(userId);
 
   // Берём общие категории (family_id IS NULL) и категории этой семьи,
   // но исключаем те базовые, которые семья "спрятала" в hidden_categories
@@ -330,7 +463,7 @@ app.get('/categories', requireLogin, async (req, res) => {
 app.post('/categories', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
-  const familyId = await getUserFamilyId(userId);
+  const { familyId } = await ensureFamilyAndAccountForUser(userId);
 
   let { name, type, color, icon } = req.body;
 
@@ -391,7 +524,7 @@ app.post('/categories', requireLogin, async (req, res) => {
 app.post('/categories/update', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
-  const familyId = await getUserFamilyId(userId);
+  const { familyId } = await ensureFamilyAndAccountForUser(userId);
 
   let { id, name, type, color, icon } = req.body;
 
@@ -399,6 +532,19 @@ app.post('/categories/update', requireLogin, async (req, res) => {
     return res.redirect('/categories');
   }
 
+  // Загружаем текущую категорию
+  const [catRows] = await pool.execute(
+    'SELECT * FROM categories WHERE id = ? LIMIT 1',
+    [id]
+  );
+
+  if (catRows.length === 0) {
+    return res.redirect('/categories');
+  }
+
+  const category = catRows[0];
+
+  // Нормализуем поля
   name = (name || '').trim();
   type = type === 'income' ? 'income' : 'expense';
   color = color || '#cccccc';
@@ -423,7 +569,7 @@ app.post('/categories/update', requireLogin, async (req, res) => {
   );
 
   if (existing.length > 0) {
-    // Загружаем категории с учётом hidden_categories, чтобы корректно отрисовать страницу
+    // Загружаем список категорий (с учётом скрытых) и показываем сообщение
     const [rows] = await pool.execute(
       `
       SELECT *
@@ -442,30 +588,64 @@ app.post('/categories/update', requireLogin, async (req, res) => {
     return res.render('categories/index', {
       user,
       categories: rows,
-      message: `Категория с именем "${name}" уже существует.`,
+      message: `Категория "${name}" с таким типом уже существует.`,
       activePage: 'categories',
     });
   }
 
-  // Обновляем категорию
-  await pool.execute(
-    `
-    UPDATE categories
-    SET name = ?, type = ?, color = ?, icon = ?
-    WHERE id = ?
-    `,
-    [name, type, color, icon, id]
-  );
+  // Если категория базовая (общая) -> делаем "свою" копию
+  if (category.family_id === null) {
+    // 1) создаём новую категорию для этой семьи
+    const [insertRes] = await pool.execute(
+      `
+      INSERT INTO categories (family_id, name, type, color, icon)
+      VALUES (?, ?, ?, ?, ?)
+      `,
+      [familyId, name, type, color, icon]
+    );
+    const newId = insertRes.insertId;
+
+    // 2) все транзакции этой семьи переводим на новую категорию
+    await pool.execute(
+      `
+      UPDATE transactions
+      SET category_id = ?
+      WHERE family_id = ? AND category_id = ?
+      `,
+      [newId, familyId, id]
+    );
+
+    // 3) прячем базовую категорию для этой семьи
+    await pool.execute(
+      `
+      INSERT IGNORE INTO hidden_categories (family_id, category_id)
+      VALUES (?, ?)
+      `,
+      [familyId, id]
+    );
+  } else if (category.family_id === familyId) {
+    // Обычное обновление своей категории
+    await pool.execute(
+      `
+      UPDATE categories
+      SET name = ?, type = ?, color = ?, icon = ?
+      WHERE id = ? AND family_id = ?
+      `,
+      [name, type, color, icon, id, familyId]
+    );
+  } else {
+    // На всякий случай: чужие семейные категории редактировать нельзя
+    return res.redirect('/categories');
+  }
 
   res.redirect('/categories');
 });
-
 
 // ---------- КАТЕГОРИИ: удаление ----------
 app.post('/categories/delete', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
-  const familyId = await getUserFamilyId(userId);
+  const { familyId } = await ensureFamilyAndAccountForUser(userId);
 
   const { id } = req.body;
   if (!id) return res.redirect('/categories');
@@ -520,14 +700,13 @@ app.post('/categories/delete', requireLogin, async (req, res) => {
   }
 });
 
-
 // ============ ОЧИСТКА ДАННЫХ СЕМЬИ ============
 
 app.post('/reset-data', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
-  const familyId = await getUserFamilyId(userId);
+  const { familyId } = await ensureFamilyAndAccountForUser(userId);
   if (!familyId) {
     return res.redirect('/');
   }

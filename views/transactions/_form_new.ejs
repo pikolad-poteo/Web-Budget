@@ -29,12 +29,20 @@
 
       <div class="mb-3">
         <label class="form-label">Кто платил</label>
-        <select name="who" class="form-select">
-          <option value="me">Я</option>
-          <option value="girlfriend">Девушка</option>
-          <option value="shared">Общая</option>
+        <select name="who" class="form-select" required>
+          <% if (members && members.length > 0) { %>
+            <% members.forEach(function(m) { %>
+              <option value="<%- m.name %>"><%- m.name %></option>
+            <% }) %>
+          <% } else { %>
+            <option value="">Сначала создайте семью</option>
+          <% } %>
         </select>
+        <div class="form-text">
+          Список берётся из настроек семьи.
+        </div>
       </div>
+
 
       <div class="mb-3">
         <label class="form-label">Сумма (€)</label>

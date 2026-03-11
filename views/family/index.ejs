@@ -1,0 +1,123 @@
+<%- include('../partials/header', { user, activePage: 'family' }) %>
+
+<h2 class="mb-3">Семья</h2>
+<p class="text-muted">
+  Сначала дайте название семье и укажите её участников. Они будут доступны в поле «Кто платил» при добавлении транзакций.
+</p>
+
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Настройки семьи</h5>
+
+        <form method="POST" action="/family" id="family-form">
+          <!-- Название семьи -->
+          <div class="mb-3">
+            <label class="form-label">Название семьи</label>
+            <input
+              type="text"
+              name="family_name"
+              class="form-control"
+              value="<%- familyName || '' %>"
+              placeholder="Например: Семья Ивановых"
+              required
+            >
+          </div>
+
+          <!-- Участники -->
+          <div class="mb-3">
+            <label class="form-label">Участники семьи</label>
+
+            <div id="members-container">
+              <% members.forEach(function(m, index) { %>
+                <div class="input-group mb-2 member-row">
+                  <span class="input-group-text"><%= index + 1 %></span>
+                  <input
+                    type="text"
+                    name="names"
+                    class="form-control"
+                    value="<%- m.name %>"
+                    placeholder="Имя участника"
+                    required
+                  >
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    onclick="removeMemberRow(this)"
+                    title="Удалить"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              <% }) %>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              onclick="addMemberRow()"
+            >
+              <i class="bi bi-person-plus me-1"></i>
+              Добавить участника
+            </button>
+          </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-primary">
+              Сохранить семью
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function addMemberRow() {
+    const container = document.getElementById('members-container');
+    if (!container) return;
+
+    const index = container.querySelectorAll('.member-row').length + 1;
+
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2 member-row';
+    div.innerHTML = `
+      <span class="input-group-text">${index}</span>
+      <input
+        type="text"
+        name="names"
+        class="form-control"
+        placeholder="Имя участника"
+        required
+      >
+      <button
+        type="button"
+        class="btn btn-outline-danger"
+        onclick="removeMemberRow(this)"
+        title="Удалить"
+      >
+        <i class="bi bi-trash"></i>
+      </button>
+    `;
+    container.appendChild(div);
+  }
+
+  function removeMemberRow(btn) {
+    const row = btn.closest('.member-row');
+    const container = document.getElementById('members-container');
+    if (!row || !container) return;
+
+    container.removeChild(row);
+
+    // перенумеровываем
+    const rows = container.querySelectorAll('.member-row');
+    rows.forEach((r, i) => {
+      const span = r.querySelector('.input-group-text');
+      if (span) span.textContent = i + 1;
+    });
+  }
+</script>
+
+<%- include('../partials/footer') %>
