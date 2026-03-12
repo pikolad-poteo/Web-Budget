@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const checkDatabase = require('./src/checkDatabase');
 const {
   registerUser,
   loginUser,
@@ -30,6 +31,7 @@ app.use(
 );
 
 // навешиваем текущего пользователя
+app.use(checkDatabase);
 app.use(attachUser);
 
 // ================== РОУТЫ ==================
@@ -735,6 +737,11 @@ app.post('/reset-data', requireLogin, async (req, res) => {
 });
 
 // ==============================================
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).render('errors/db');
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {

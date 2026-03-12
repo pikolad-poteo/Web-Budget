@@ -1,0 +1,25 @@
+<%- include('../partials/header', { user: null }) %>
+
+<div class="container mt-5">
+  <div class="alert alert-danger text-center">
+
+    <h2 class="mb-3">
+      ⚠ Ошибка подключения к базе данных
+    </h2>
+
+    <p>
+      Приложение временно не может подключиться к базе данных.
+    </p>
+
+    <p class="text-muted">
+      Попробуйте обновить страницу позже.
+    </p>
+
+    <a href="/login" class="btn btn-primary mt-3">
+      Обновить страницу
+    </a>
+
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
