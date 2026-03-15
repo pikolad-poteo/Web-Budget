@@ -736,11 +736,27 @@ app.post('/reset-data', requireLogin, async (req, res) => {
   }
 });
 
-// ==============================================
+// ====================Обработчики==========================
 
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).render('errors/db');
+});
+
+// 404 — если ни один маршрут не подошёл
+app.use((req, res) => {
+  res.status(404).render('errors/404', {
+    user: req.user || null
+  });
+});
+
+// глобальный обработчик ошибок
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+
+  res.status(500).render('errors/500', {
+    user: req.user || null
+  });
 });
 
 const PORT = 3000;
