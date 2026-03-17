@@ -256,11 +256,14 @@ app.post('/family', requireLogin, async (req, res) => {
 
   const { familyId } = await ensureFamilyAndAccountForUser(userId);
 
-  let { family_name } = req.body;
-  let names = req.body.names || [];
+  let { family_name, names, is_owner } = req.body;
 
   if (!Array.isArray(names)) {
-    names = [names];
+    names = names ? [names] : [];
+  }
+
+  if (!Array.isArray(is_owner)) {
+    is_owner = typeof is_owner !== 'undefined' ? [is_owner] : [];
   }
 
   family_name = (family_name || '').trim();
@@ -268,47 +271,101 @@ app.post('/family', requireLogin, async (req, res) => {
     family_name = user.name || user.email || 'Наша семья';
   }
 
-  // Чистим имена участников
-  names = names
-    .map((n) => String(n || '').trim())
-    .filter((n) => n.length > 0);
+  const members = names
+    .map((name, index) => ({
+      name: String(name || '').trim(),
+      is_owner: String(is_owner[index] || '0') === '1' ? 1 : 0,
+    }))
+    .filter((m) => m.name.length > 0);
 
-  if (names.length === 0) {
-    // хотя бы один участник должен быть
-    names = [user.name || user.email || 'Я'];
+  if (members.length === 0) {
+    return res.status(400).render('family/index', {
+      user,
+      familyName: family_name,
+      members: [{ id: null, name: user.name || user.email, is_owner: 1 }],
+      activePage: 'family',
+      message: 'В семье должен быть хотя бы один участник.',
+    });
   }
 
+  const ownerMembers = members.filter((m) => m.is_owner === 1);
+
+  if (ownerMembers.length !== 1) {
+    return res.status(400).render('family/index', {
+      user,
+      familyName: family_name,
+      members,
+      activePage: 'family',
+      message: 'В семье должен быть ровно один владелец.',
+    });
+  }
+
+  const ownerMember = ownerMembers[0];
+
   try {
-    // 1) Обновляем имя семьи
     await pool.execute('UPDATE families SET name = ? WHERE id = ?', [
       family_name,
       familyId,
     ]);
 
-    // 2) Удаляем старый состав семьи
+    // Переименовываем самого пользователя-владельца
+    await pool.execute('UPDATE users SET name = ? WHERE id = ?', [
+      ownerMember.name,
+      userId,
+    ]);
+
+    // Обновим req.user в текущем запросе
+    req.user.name = ownerMember.name;
+
     await pool.execute('DELETE FROM family_members WHERE family_id = ?', [
       familyId,
     ]);
 
-    // 3) Вставляем новых участников
-    const ownerName = user.name || user.email;
-
-    for (let i = 0; i < names.length; i++) {
-      const name = names[i];
-      const isOwner = name === ownerName ? 1 : 0;
-
+    for (const member of members) {
       await pool.execute(
         `
         INSERT INTO family_members (family_id, user_id, name, is_owner)
         VALUES (?, ?, ?, ?)
         `,
-        [familyId, userId, name, isOwner]
+        [familyId, userId, member.name, member.is_owner]
       );
     }
 
     res.redirect('/');
-    } catch (err) {
+  } catch (err) {
     logError(err, req, { type: 'save_family' });
+
+    return res.status(500).render('errors/500', {
+      user: req.user || null,
+    });
+  }
+});
+
+app.post('/family/delete', requireLogin, async (req, res) => {
+  const user = req.user;
+  const userId = user.id;
+
+  const { familyId } = await ensureFamilyAndAccountForUser(userId);
+
+  if (!familyId) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Удаляем ссылку у пользователя на семью
+    await pool.execute(
+      'UPDATE users SET family_id = NULL WHERE id = ?',
+      [userId]
+    );
+
+    // Удаляем семью.
+    // По внешним ключам каскадно удалятся:
+    // family_members, accounts, transactions, семейные categories, hidden_categories
+    await pool.execute('DELETE FROM families WHERE id = ?', [familyId]);
+
+    res.redirect('/');
+  } catch (err) {
+    logError(err, req, { type: 'delete_family' });
 
     return res.status(500).render('errors/500', {
       user: req.user || null,

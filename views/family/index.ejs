@@ -6,13 +6,12 @@
 </p>
 
 <div class="row">
-  <div class="col-lg-6">
-    <div class="card border-0 shadow-sm">
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm mb-3">
       <div class="card-body">
         <h5 class="card-title mb-3">Настройки семьи</h5>
 
         <form method="POST" action="/family" id="family-form">
-          <!-- Название семьи -->
           <div class="mb-3">
             <label class="form-label">Название семьи</label>
             <input
@@ -25,14 +24,17 @@
             >
           </div>
 
-          <!-- Участники -->
           <div class="mb-3">
             <label class="form-label">Участники семьи</label>
 
             <div id="members-container">
               <% members.forEach(function(m, index) { %>
-                <div class="input-group mb-2 member-row">
+                <div
+                  class="input-group mb-2 member-row"
+                  data-owner="<%= m.is_owner ? '1' : '0' %>"
+                >
                   <span class="input-group-text"><%= index + 1 %></span>
+
                   <input
                     type="text"
                     name="names"
@@ -41,14 +43,25 @@
                     placeholder="Имя участника"
                     required
                   >
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger"
-                    onclick="removeMemberRow(this)"
-                    title="Удалить"
+
+                  <input
+                    type="hidden"
+                    name="is_owner"
+                    value="<%= m.is_owner ? '1' : '0' %>"
                   >
-                    <i class="bi bi-trash"></i>
-                  </button>
+
+                  <% if (m.is_owner) { %>
+                    <span class="input-group-text text-muted">Владелец</span>
+                  <% } else { %>
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger"
+                      onclick="removeMemberRow(this)"
+                      title="Удалить"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  <% } %>
                 </div>
               <% }) %>
             </div>
@@ -71,10 +84,33 @@
         </form>
       </div>
     </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-danger mb-3">Опасная зона</h5>
+        <p class="text-muted mb-3">
+          Удаление семьи удалит все семейные данные: участников, транзакции, счета и семейные категории.
+        </p>
+
+        <form method="POST" action="/family/delete" onsubmit="return confirmDeleteFamily()">
+          <button type="submit" class="btn btn-danger">
+            Удалить семью
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
+  function renumberMembers() {
+    const rows = document.querySelectorAll('#members-container .member-row');
+    rows.forEach((row, i) => {
+      const span = row.querySelector('.input-group-text');
+      if (span) span.textContent = i + 1;
+    });
+  }
+
   function addMemberRow() {
     const container = document.getElementById('members-container');
     if (!container) return;
@@ -83,8 +119,10 @@
 
     const div = document.createElement('div');
     div.className = 'input-group mb-2 member-row';
+    div.setAttribute('data-owner', '0');
     div.innerHTML = `
       <span class="input-group-text">${index}</span>
+
       <input
         type="text"
         name="names"
@@ -92,6 +130,9 @@
         placeholder="Имя участника"
         required
       >
+
+      <input type="hidden" name="is_owner" value="0">
+
       <button
         type="button"
         class="btn btn-outline-danger"
@@ -109,14 +150,29 @@
     const container = document.getElementById('members-container');
     if (!row || !container) return;
 
-    container.removeChild(row);
-
-    // перенумеровываем
     const rows = container.querySelectorAll('.member-row');
-    rows.forEach((r, i) => {
-      const span = r.querySelector('.input-group-text');
-      if (span) span.textContent = i + 1;
-    });
+    if (rows.length <= 1) {
+      alert('В семье должен остаться хотя бы один участник.');
+      return;
+    }
+
+    if (row.dataset.owner === '1') {
+      alert('Нельзя удалить владельца семьи.');
+      return;
+    }
+
+    const memberNameInput = row.querySelector('input[name="names"]');
+    const memberName = memberNameInput ? memberNameInput.value.trim() : 'этого участника';
+
+    const confirmed = confirm(`Удалить участника "${memberName}"?`);
+    if (!confirmed) return;
+
+    container.removeChild(row);
+    renumberMembers();
+  }
+
+  function confirmDeleteFamily() {
+    return confirm('Вы уверены, что хотите удалить семью? Все семейные данные будут удалены без возможности восстановления.');
   }
 </script>
 
