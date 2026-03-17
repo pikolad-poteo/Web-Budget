@@ -22,6 +22,10 @@
 </head>
 <body class="bg-light">
 
+<%
+  const currentPage = typeof activePage !== 'undefined' ? activePage : '';
+%>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
     
@@ -36,6 +40,9 @@
       type="button"
       data-bs-toggle="collapse"
       data-bs-target="#mainNavbar"
+      aria-controls="mainNavbar"
+      aria-expanded="false"
+      aria-label="Переключить навигацию"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -49,7 +56,7 @@
 
           <li class="nav-item">
             <a
-              class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>"
+              class="nav-link <%= currentPage === 'dashboard' ? 'active' : '' %>"
               href="/"
             >
               Дашборд
@@ -58,7 +65,7 @@
 
           <li class="nav-item">
             <a
-              class="nav-link <%= activePage === 'transactions' ? 'active' : '' %>"
+              class="nav-link <%= currentPage === 'transactions' ? 'active' : '' %>"
               href="/transactions"
             >
               Транзакции
@@ -67,7 +74,7 @@
 
           <li class="nav-item">
             <a
-              class="nav-link <%= activePage === 'categories' ? 'active' : '' %>"
+              class="nav-link <%= currentPage === 'categories' ? 'active' : '' %>"
               href="/categories"
             >
               Категории
@@ -76,7 +83,7 @@
 
           <li class="nav-item">
             <a
-              class="nav-link <%= activePage === 'family' ? 'active' : '' %>"
+              class="nav-link <%= currentPage === 'family' ? 'active' : '' %>"
               href="/family"
               title="Участники семьи"
             >

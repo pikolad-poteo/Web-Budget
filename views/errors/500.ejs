@@ -1,0 +1,13 @@
+<%- include('../partials/header', { user: user || null }) %>
+
+<div class="container mt-5">
+  <div class="text-center">
+    <h1 class="display-4 text-danger mb-3">500</h1>
+    <h3 class="mb-3">Ошибка сервера</h3>
+    <p class="text-muted">Произошла непредвиденная ошибка при обработке запроса.</p>
+    <p class="text-muted">Попробуйте повторить действие позже.</p>
+    <a href="/" class="btn btn-primary mt-3">На главную</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

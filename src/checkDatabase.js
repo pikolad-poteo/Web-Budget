@@ -1,12 +1,20 @@
 const pool = require('./db');
+const { logError } = require('./logger');
 
 async function checkDatabase(req, res, next) {
   try {
     await pool.query('SELECT 1');
-    next();
+    return next();
   } catch (err) {
-    console.error('Database connection error:', err);
-    return res.status(500).render('errors/db');
+    logError(err, req, { type: 'database_connection_check' });
+
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    return res.status(500).render('errors/database', {
+      user: null,
+    });
   }
 }
 

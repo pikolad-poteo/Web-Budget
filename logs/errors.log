@@ -1,0 +1,24 @@
+[2026-03-17 17:39:43] ERROR
+Method: GET
+URL: /
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {}
+Message: 
+Stack: Error
+    at PromisePool.query (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at checkDatabase (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\src\checkDatabase.js:6:16)
+    at Layer.handleRequest (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\node_modules\router\index.js:342:13)
+    at C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\node_modules\router\index.js:297:9
+    at processParams (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\node_modules\router\index.js:582:12)
+    at next (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\node_modules\router\index.js:291:5)
+    at requestLogger (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\src\logger.js:142:3)
+    at Layer.handleRequest (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\User\Desktop\Vlad Programmerimine\Практика 2026\famaly-budget\node_modules\router\index.js:342:13)
+Extra: {
+  "type": "database_connection_check"
+}
+--------------------------------------------------

@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const checkDatabase = require('./src/checkDatabase');
+const { logError, requestLogger, logInfo } = require('./src/logger');
 const {
   registerUser,
   loginUser,
@@ -31,6 +32,7 @@ app.use(
 );
 
 // навешиваем текущего пользователя
+app.use(requestLogger);
 app.use(checkDatabase);
 app.use(attachUser);
 
@@ -305,9 +307,12 @@ app.post('/family', requireLogin, async (req, res) => {
     }
 
     res.redirect('/');
-  } catch (err) {
-    console.error('Error saving family:', err);
-    res.status(500).send('Ошибка при сохранении семьи.');
+    } catch (err) {
+    logError(err, req, { type: 'save_family' });
+
+    return res.status(500).render('errors/500', {
+      user: req.user || null,
+    });
   }
 });
 
@@ -696,11 +701,14 @@ app.post('/categories/delete', requireLogin, async (req, res) => {
     }
 
     res.redirect('/categories');
-  } catch (err) {
-    console.error('Error deleting category:', err);
-    res.status(500).send('Ошибка при удалении категории.');
-  }
-});
+    } catch (err) {
+      logError(err, req, { type: 'delete_category' });
+
+      return res.status(500).render('errors/500', {
+        user: req.user || null,
+      });
+    }
+    });
 
 // ============ ОЧИСТКА ДАННЫХ СЕМЬИ ============
 
@@ -730,36 +738,35 @@ app.post('/reset-data', requireLogin, async (req, res) => {
     ]);
 
     res.redirect('/');
-  } catch (err) {
-    console.error('Error in /reset-data:', err);
-    res.status(500).send('Ошибка при очистке данных.');
+    } catch (err) {
+    logError(err, req, { type: 'reset_family_data' });
+
+    return res.status(500).render('errors/500', {
+      user: req.user || null,
+    });
   }
 });
 
-// ====================Обработчики==========================
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).render('errors/db');
-});
+// ==================== ОБРАБОТЧИКИ ===========================
 
 // 404 — если ни один маршрут не подошёл
 app.use((req, res) => {
   res.status(404).render('errors/404', {
-    user: req.user || null
+    user: req.user || null,
   });
 });
 
 // глобальный обработчик ошибок
 app.use((err, req, res, next) => {
-  console.error('Server error:', err);
+  logError(err, req, { type: 'global_error_handler' });
 
   res.status(500).render('errors/500', {
-    user: req.user || null
+    user: req.user || null,
   });
 });
 
 const PORT = 3000;
 app.listen(PORT, () => {
+  logInfo(`Server started on http://localhost:${PORT}`);
   console.log(`Сервер доступен по адресу -> http://localhost:${PORT}`);
 });
