@@ -274,3 +274,34 @@ ALTER TABLE accounts AUTO_INCREMENT = 3;
 ALTER TABLE family_members AUTO_INCREMENT = 6;
 ALTER TABLE categories AUTO_INCREMENT = 25;
 ALTER TABLE transactions AUTO_INCREMENT = 24;
+
+------------Запрос на добавление новой таблицы---------------
+
+CREATE TABLE calendar_events (
+  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  family_id INT(10) UNSIGNED NOT NULL,
+  user_id INT(10) UNSIGNED NOT NULL,
+  member_name VARCHAR(255) DEFAULT NULL,
+  title VARCHAR(255) NOT NULL,
+  description VARCHAR(1000) DEFAULT NULL,
+  event_type ENUM('event','birthday','reminder','task','wishlist_placeholder') NOT NULL DEFAULT 'event',
+  event_date DATE NOT NULL,
+  start_time TIME DEFAULT NULL,
+  end_time TIME DEFAULT NULL,
+  is_all_day TINYINT(1) NOT NULL DEFAULT 0,
+  is_recurring TINYINT(1) NOT NULL DEFAULT 0,
+  recurring_type ENUM('none','daily','weekly','monthly','yearly') NOT NULL DEFAULT 'none',
+  color VARCHAR(20) NOT NULL DEFAULT '#0d6efd',
+  created_at TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (id),
+  KEY idx_calendar_events_family_date (family_id, event_date),
+  KEY idx_calendar_events_user_id (user_id),
+  KEY idx_calendar_events_type (event_type),
+  CONSTRAINT fk_calendar_events_family
+    FOREIGN KEY (family_id) REFERENCES families(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_calendar_events_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
