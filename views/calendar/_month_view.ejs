@@ -1,0 +1,57 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-2 p-md-3">
+    <div class="calendar-grid-header">
+      <div>Пн</div>
+      <div>Вт</div>
+      <div>Ср</div>
+      <div>Чт</div>
+      <div>Пт</div>
+      <div>Сб</div>
+      <div>Вс</div>
+    </div>
+
+    <div class="calendar-grid">
+      <% monthMatrix.forEach(function(week) { %>
+        <% week.forEach(function(day) { %>
+          <a
+            href="/calendar?view=day&date=<%= day.date %>"
+            class="calendar-day-cell text-decoration-none <%= day.isCurrentMonth ? '' : 'calendar-day-muted' %> <%= day.isToday ? 'calendar-day-today' : '' %> <%= day.date === selectedDate ? 'calendar-day-selected' : '' %>"
+          >
+            <div class="calendar-day-head">
+              <span class="calendar-day-number"><%= day.dayNumber %></span>
+              <% if (day.events.length > 0) { %>
+                <span class="calendar-day-count"><%= day.events.length %></span>
+              <% } %>
+            </div>
+
+            <div class="calendar-day-events">
+              <% day.events.slice(0, 3).forEach(function(event) { %>
+                <div
+                  class="calendar-event-pill <%= Number(event.is_completed) === 1 ? 'calendar-event-pill-completed' : '' %>"
+                  style="border-left-color: <%= event.color || '#0d6efd' %>;"
+                  title="<%= event.title %>"
+                >
+                  <% if (Number(event.is_all_day) === 1) { %>
+                    <span class="calendar-event-time">весь день</span>
+                  <% } else if (event.start_time) { %>
+                    <span class="calendar-event-time"><%= String(event.start_time).slice(0, 5) %></span>
+                  <% } %>
+
+                  <span class="calendar-event-title <%= Number(event.is_completed) === 1 ? 'calendar-text-completed' : '' %>">
+                    <%= event.title %>
+                  </span>
+                </div>
+              <% }) %>
+
+              <% if (day.events.length > 3) { %>
+                <div class="calendar-more-events">
+                  ещё <%= day.events.length - 3 %>
+                </div>
+              <% } %>
+            </div>
+          </a>
+        <% }) %>
+      <% }) %>
+    </div>
+  </div>
+</div>

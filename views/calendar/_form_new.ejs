@@ -1,0 +1,175 @@
+<%
+  const defaultDate = selectedDate || new Date().toISOString().slice(0, 10);
+%>
+
+<div class="card border-0 shadow-sm h-100">
+  <div class="card-body">
+    <h5 class="card-title">Добавить событие</h5>
+
+    <form method="POST" action="/calendar">
+      <input type="hidden" name="redirect_view" value="<%= calendarView || 'month' %>">
+
+      <div class="mb-3">
+        <label class="form-label">Название</label>
+        <input
+          type="text"
+          name="title"
+          class="form-control"
+          placeholder="Например: Приём у врача"
+          required
+        >
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Дата</label>
+        <input
+          type="date"
+          name="event_date"
+          class="form-control"
+          value="<%= defaultDate %>"
+          required
+        >
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Тип</label>
+        <select name="event_type" class="form-select">
+          <option value="event">Событие</option>
+          <option value="birthday">День рождения</option>
+          <option value="reminder">Напоминание</option>
+          <option value="task">Задача</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Для кого</label>
+        <select name="member_name" class="form-select">
+          <option value="">Без привязки</option>
+          <% if (members && members.length > 0) { %>
+            <% members.forEach(function(m) { %>
+              <option value="<%- m.name %>"><%- m.name %></option>
+            <% }) %>
+          <% } %>
+        </select>
+        <div class="form-text">
+          Можно выбрать участника семьи, если событие относится к конкретному человеку.
+        </div>
+      </div>
+
+      <div class="form-check mb-3">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value="1"
+          id="calendar-is-all-day"
+          name="is_all_day"
+        >
+        <label class="form-check-label" for="calendar-is-all-day">
+          Весь день
+        </label>
+      </div>
+
+      <div class="row g-3 mb-3" id="calendar-time-row">
+        <div class="col-md-6">
+          <label class="form-label">Начало</label>
+          <input
+            type="time"
+            name="start_time"
+            class="form-control"
+          >
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Конец</label>
+          <input
+            type="time"
+            name="end_time"
+            class="form-control"
+          >
+        </div>
+      </div>
+
+      <div class="form-check mb-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value="1"
+          id="calendar-is-recurring"
+          name="is_recurring"
+        >
+        <label class="form-check-label" for="calendar-is-recurring">
+          Повторяющееся событие
+        </label>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Повтор</label>
+        <select name="recurring_type" class="form-select" id="calendar-recurring-type" disabled>
+          <option value="none">Без повтора</option>
+          <option value="daily">Каждый день</option>
+          <option value="weekly">Каждую неделю</option>
+          <option value="monthly">Каждый месяц</option>
+          <option value="yearly">Каждый год</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Цвет</label>
+        <input
+          type="color"
+          name="color"
+          class="form-control form-control-color"
+          value="#0d6efd"
+          title="Выбери цвет события"
+        >
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Описание</label>
+        <textarea
+          name="description"
+          class="form-control"
+          rows="4"
+          placeholder="Подробности события, адрес, заметки..."
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="bi bi-plus-circle me-1"></i>
+        Добавить событие
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const allDayCheckbox = document.getElementById('calendar-is-all-day');
+    const timeRow = document.getElementById('calendar-time-row');
+    const recurringCheckbox = document.getElementById('calendar-is-recurring');
+    const recurringSelect = document.getElementById('calendar-recurring-type');
+
+    function toggleTimeRow() {
+      if (!allDayCheckbox || !timeRow) return;
+      timeRow.style.display = allDayCheckbox.checked ? 'none' : '';
+    }
+
+    function toggleRecurringSelect() {
+      if (!recurringCheckbox || !recurringSelect) return;
+      recurringSelect.disabled = !recurringCheckbox.checked;
+      if (!recurringCheckbox.checked) {
+        recurringSelect.value = 'none';
+      }
+    }
+
+    toggleTimeRow();
+    toggleRecurringSelect();
+
+    if (allDayCheckbox) {
+      allDayCheckbox.addEventListener('change', toggleTimeRow);
+    }
+
+    if (recurringCheckbox) {
+      recurringCheckbox.addEventListener('change', toggleRecurringSelect);
+    }
+  });
+</script>

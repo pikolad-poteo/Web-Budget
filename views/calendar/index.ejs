@@ -1,0 +1,85 @@
+<%- include('../partials/header', { user, activePage: 'calendar' }) %>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <div>
+    <h2 class="mb-1">Календарь</h2>
+    <p class="text-muted mb-0">
+      Семейное расписание, напоминания и важные даты.
+    </p>
+  </div>
+</div>
+
+<div class="row g-4 calendar-layout">
+  <div class="col-lg-4 col-md-5 calendar-sidebar-col">
+    <%- include('_form_new', {
+      members,
+      selectedDate,
+      calendarView
+    }) %>
+  </div>
+
+  <div class="col-lg-8 col-md-7 calendar-main-col">
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-body">
+        <div class="calendar-toolbar d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div class="btn-group" role="group">
+            <% if (calendarView === 'month') { %>
+              <a href="/calendar?view=month&date=<%= nav.prevMonth %>" class="btn btn-outline-secondary">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+              <a href="/calendar?view=month&date=<%= nav.today %>" class="btn btn-outline-primary">
+                Сегодня
+              </a>
+              <a href="/calendar?view=month&date=<%= nav.nextMonth %>" class="btn btn-outline-secondary">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            <% } else { %>
+              <a href="/calendar?view=day&date=<%= nav.prevDay %>" class="btn btn-outline-secondary">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+              <a href="/calendar?view=day&date=<%= nav.today %>" class="btn btn-outline-primary">
+                Сегодня
+              </a>
+              <a href="/calendar?view=day&date=<%= nav.nextDay %>" class="btn btn-outline-secondary">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            <% } %>
+          </div>
+
+          <div class="calendar-toolbar-title fw-semibold text-center">
+            <% if (calendarView === 'month') { %>
+              <%= monthTitle %>
+            <% } else { %>
+              <%= formattedSelectedDate %>
+            <% } %>
+          </div>
+
+          <div class="btn-group" role="group">
+            <a
+              href="/calendar?view=month&date=<%= selectedDate %>"
+              class="btn <%= calendarView === 'month' ? 'btn-primary' : 'btn-outline-primary' %>"
+            >
+              <i class="bi bi-calendar3 me-1"></i>
+              Месяц
+            </a>
+            <a
+              href="/calendar?view=day&date=<%= selectedDate %>"
+              class="btn <%= calendarView === 'day' ? 'btn-primary' : 'btn-outline-primary' %>"
+            >
+              <i class="bi bi-journal-text me-1"></i>
+              Дневник
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if (calendarView === 'month') { %>
+      <%- include('_month_view', { monthMatrix, selectedDate }) %>
+    <% } else { %>
+      <%- include('_day_view', { dayEvents, selectedDate, formattedSelectedDate, calendarView, members }) %>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
