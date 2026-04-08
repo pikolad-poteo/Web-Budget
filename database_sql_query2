@@ -4,12 +4,12 @@
 -- MySQL 8+
 -- =========================================================
 
-DROP DATABASE IF EXISTS family_budget;
-CREATE DATABASE family_budget
+DROP DATABASE IF EXISTS web_budget;
+CREATE DATABASE web_budget
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE family_budget;
+USE web_budget;
 
 -- =========================================================
 -- 1. TABLES
