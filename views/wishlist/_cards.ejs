@@ -1,0 +1,111 @@
+<% if (!wishlist || wishlist.length === 0) { %>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body py-5 text-center">
+      <div class="mb-2 fs-3">🛍️</div>
+      <h5 class="mb-1">Пока нет карточек wishlist</h5>
+      <p class="text-muted mb-0">
+        Добавьте первую покупку через форму выше.
+      </p>
+    </div>
+  </div>
+<% } else { %>
+  <div class="row g-4">
+    <% wishlist.forEach(item => { %>
+      <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="card border-0 shadow-sm h-100 wishlist-card">
+          <a
+            href="/wishlist/<%= item.id %>"
+            class="wishlist-card-image-link"
+          >
+            <% if (item.image_url) { %>
+              <img
+                src="<%= item.image_url %>"
+                alt="<%= item.title %>"
+                class="wishlist-card-image"
+              >
+            <% } else { %>
+              <div class="wishlist-card-image wishlist-card-image-placeholder">
+                <i class="bi bi-image"></i>
+              </div>
+            <% } %>
+          </a>
+
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+              <span class="wishlist-status-badge wishlist-status-<%= item.status %>">
+                <% if (item.status === 'planned') { %>Запланировано<% } %>
+                <% if (item.status === 'postponed') { %>Отложено<% } %>
+                <% if (item.status === 'bought') { %>Куплено<% } %>
+                <% if (item.status === 'cancelled') { %>Отменено<% } %>
+              </span>
+
+              <% if (item.priority === 'high') { %>
+                <span class="badge bg-danger-subtle text-danger">High</span>
+              <% } else if (item.priority === 'medium') { %>
+                <span class="badge bg-warning-subtle text-warning">Medium</span>
+              <% } else { %>
+                <span class="badge bg-secondary-subtle text-secondary">Low</span>
+              <% } %>
+            </div>
+
+            <h5 class="wishlist-card-title mb-1">
+              <a href="/wishlist/<%= item.id %>" class="text-decoration-none text-dark">
+                <%= item.title %>
+              </a>
+            </h5>
+
+            <div class="wishlist-card-price mb-2">
+              <%= Number(item.amount).toFixed(2) %> €
+            </div>
+
+            <% if (item.description) { %>
+              <p class="wishlist-card-description text-muted mb-3">
+                <%= item.description %>
+              </p>
+            <% } %>
+
+            <div class="wishlist-card-meta mb-3">
+              <% if (item.category_name) { %>
+                <span class="wishlist-meta-pill">
+                  <i class="bi <%= item.category_icon || 'bi-tag' %> me-1"></i>
+                  <%= item.category_name %>
+                </span>
+              <% } %>
+
+              <% if (item.planned_date) { %>
+                <span class="wishlist-meta-pill">
+                  <i class="bi bi-calendar3 me-1"></i>
+                  <%= String(item.planned_date).slice(0, 10) %>
+                </span>
+              <% } %>
+
+              <% if (item.who) { %>
+                <span class="wishlist-meta-pill">
+                  <i class="bi bi-person me-1"></i>
+                  <%= item.who %>
+                </span>
+              <% } %>
+            </div>
+
+            <div class="mt-auto d-flex gap-2">
+              <a href="/wishlist/<%= item.id %>" class="btn btn-dark btn-sm flex-fill">
+                Открыть
+              </a>
+
+              <% if (item.store_url) { %>
+                <a
+                  href="<%= item.store_url %>"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-outline-primary btn-sm flex-fill"
+                >
+                  Перейти
+                </a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>

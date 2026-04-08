@@ -2,14 +2,15 @@
 -- FAMILY BUDGET — FULL RESET SQL
 -- Полный сброс и пересоздание базы данных с тестовыми данными
 -- MySQL 8+
+-- Обновлено: добавлена таблица wishlist
 -- =========================================================
 
-DROP DATABASE IF EXISTS family_budget;
-CREATE DATABASE family_budget
+DROP DATABASE IF EXISTS web_budget;
+CREATE DATABASE web_budget
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE family_budget;
+USE web_budget;
 
 -- =========================================================
 -- 1. TABLES
@@ -143,6 +144,46 @@ CREATE TABLE transactions (
     ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE wishlist (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  family_id INT UNSIGNED NOT NULL,
+  account_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  category_id INT UNSIGNED NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description VARCHAR(500) DEFAULT NULL,
+  amount DECIMAL(12,2) NOT NULL,
+  planned_date DATE DEFAULT NULL,
+  priority ENUM('low','medium','high') NOT NULL DEFAULT 'medium',
+  status ENUM('planned','postponed','bought','cancelled') NOT NULL DEFAULT 'planned',
+  who VARCHAR(255) DEFAULT NULL,
+  linked_transaction_id INT UNSIGNED DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_wishlist_family_id (family_id),
+  KEY idx_wishlist_account_id (account_id),
+  KEY idx_wishlist_user_id (user_id),
+  KEY idx_wishlist_category_id (category_id),
+  KEY idx_wishlist_planned_date (planned_date),
+  KEY idx_wishlist_status (status),
+  CONSTRAINT fk_wishlist_family
+    FOREIGN KEY (family_id) REFERENCES families(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_wishlist_account
+    FOREIGN KEY (account_id) REFERENCES accounts(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_wishlist_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_wishlist_category
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_wishlist_transaction
+    FOREIGN KEY (linked_transaction_id) REFERENCES transactions(id)
+    ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- =========================================================
 -- 2. GLOBAL BASE CATEGORIES (family_id = NULL)
 -- =========================================================
@@ -176,18 +217,18 @@ INSERT INTO categories (id, family_id, name, type, color, icon) VALUES
 
 INSERT INTO families (id, name) VALUES
   (1, 'Семья администратора'),
-  (2, 'Семья пользователя');
+  (2, 'Семья пользователя'),
+  (3, 'Тестовая семья календаря');
 
 -- =========================================================
 -- 4. TEST USERS
--- Пароль для обоих аккаунтов: 123
+-- Пароль для всех аккаунтов: 123
 -- =========================================================
--- bcrypt hash для "123"
--- Совместим с bcryptjs.compare()
 
 INSERT INTO users (id, email, password_hash, name, family_id) VALUES
   (1, 'admin@myshop.local', '$2b$12$pFOZ5wBSN4v0euitgr9yIuclcpFlw2keJMt/MQReIgbhpbIUiXlVa', 'Админ', 1),
-  (2, 'user@myshop.local',  '$2b$12$pFOZ5wBSN4v0euitgr9yIuclcpFlw2keJMt/MQReIgbhpbIUiXlVa', 'Пользователь', 2);
+  (2, 'user@myshop.local',  '$2b$12$pFOZ5wBSN4v0euitgr9yIuclcpFlw2keJMt/MQReIgbhpbIUiXlVa', 'Пользователь', 2),
+  (3, 'calendar@myshop.local', '$2b$12$pFOZ5wBSN4v0euitgr9yIuclcpFlw2keJMt/MQReIgbhpbIUiXlVa', 'Пользователь', 3);
 
 -- =========================================================
 -- 5. MAIN ACCOUNTS
@@ -195,7 +236,8 @@ INSERT INTO users (id, email, password_hash, name, family_id) VALUES
 
 INSERT INTO accounts (id, family_id, name, is_main) VALUES
   (1, 1, 'Основной счёт', 1),
-  (2, 2, 'Основной счёт', 1);
+  (2, 2, 'Основной счёт', 1),
+  (3, 3, 'Основной счёт', 1);
 
 -- =========================================================
 -- 6. FAMILY MEMBERS
@@ -205,9 +247,9 @@ INSERT INTO family_members (id, family_id, user_id, name, is_owner) VALUES
   (1, 1, 1, 'Админ', 1),
   (2, 1, 1, 'Мария', 0),
   (3, 1, 1, 'София', 0),
-
   (4, 2, 2, 'Пользователь', 1),
-  (5, 2, 2, 'Анна', 0);
+  (5, 2, 2, 'Анна', 0),
+  (6, 3, 3, 'Пользователь', 1);
 
 -- =========================================================
 -- 7. FAMILY-SPECIFIC CATEGORIES
@@ -219,7 +261,6 @@ INSERT INTO categories (id, family_id, name, type, color, icon) VALUES
   (23, 2, 'Домашние покупки','expense', '#FF7043', 'bi-basket'),
   (24, 2, 'Фриланс',         'income',  '#26A69A', 'bi-laptop');
 
--- пример скрытой категории для первой семьи
 INSERT INTO hidden_categories (family_id, category_id) VALUES
   (1, 15);
 
@@ -233,7 +274,6 @@ VALUES
   (1,  1, 1, 1, 16,  75000.00, '2026-03-01', 'Зарплата за март',            'Админ'),
   (2,  1, 1, 1, 17,  12000.00, '2026-03-03', 'Подработка',                  'Админ'),
   (3,  1, 1, 1, 22,   5000.00, '2026-03-04', 'Перевод в накопления',        'Админ'),
-
   (4,  1, 1, 1, 1,   -6500.00, '2026-03-02', 'Закупка продуктов',           'Мария'),
   (5,  1, 1, 1, 2,   -2100.00, '2026-03-04', 'Семейное кафе',               'Админ'),
   (6,  1, 1, 1, 3,   -1200.00, '2026-03-05', 'Метро и автобус',             'Мария'),
@@ -255,7 +295,6 @@ INSERT INTO transactions
 VALUES
   (15, 2, 2, 2, 16,  42000.00, '2026-03-01', 'Основной доход',              'Пользователь'),
   (16, 2, 2, 2, 24,   8000.00, '2026-03-02', 'Фриланс заказ',               'Пользователь'),
-
   (17, 2, 2, 2, 1,   -4300.00, '2026-03-03', 'Продукты домой',              'Анна'),
   (18, 2, 2, 2, 23,  -2700.00, '2026-03-04', 'Домашние мелочи',             'Пользователь'),
   (19, 2, 2, 2, 3,    -900.00, '2026-03-05', 'Транспорт',                   'Пользователь'),
@@ -265,12 +304,103 @@ VALUES
   (23, 2, 2, 2, 18,   2000.00, '2026-03-09', 'Подарок деньгами',            'Анна');
 
 -- =========================================================
--- 10. AUTO_INCREMENT FIX
+-- 10. TEST WISHLIST
 -- =========================================================
 
-ALTER TABLE families AUTO_INCREMENT = 3;
-ALTER TABLE users AUTO_INCREMENT = 3;
-ALTER TABLE accounts AUTO_INCREMENT = 3;
-ALTER TABLE family_members AUTO_INCREMENT = 6;
+INSERT INTO wishlist
+  (id, family_id, account_id, user_id, category_id, title, description, amount, planned_date, priority, status, who, linked_transaction_id)
+VALUES
+  (1, 1, 1, 1, 11, 'Семейная поездка на выходные', 'Небольшое путешествие за город с бронированием жилья.', 15000.00, '2026-04-15', 'high',   'planned',    'Админ', NULL),
+  (2, 1, 1, 1, 8,  'Новая куртка для Софии',       'Покупка демисезонной куртки к весне.',                      5200.00,  '2026-04-10', 'medium', 'planned',    'Мария', NULL),
+  (3, 1, 1, 1, 5,  'Робот-пылесос',                'Покупка техники для дома.',                                  18990.00, '2026-05-01', 'medium', 'postponed',  'Админ', NULL),
+  (4, 1, 1, 1, 10, 'Подарок бабушке',              'Подарок ко дню рождения.',                                   2500.00,  '2026-03-12', 'low',    'bought',     'Мария', 13),
+  (5, 2, 2, 2, 23, 'Набор кухонных контейнеров',   'Для хранения продуктов дома.',                               1800.00,  '2026-04-08', 'low',    'planned',    'Анна', NULL),
+  (6, 2, 2, 2, 3,  'Самокат',                      'Покупка самоката для города.',                               7600.00,  '2026-04-20', 'high',   'planned',    'Пользователь', NULL),
+  (7, 2, 2, 2, 9,  'Подписка на семейный сервис',  'Годовая семейная подписка.',                                 2990.00,  '2026-03-08', 'medium', 'cancelled',  'Пользователь', NULL),
+  (8, 3, 3, 3, 15, 'План покупок для недели',      'Тестовая wish-позиция для семьи календаря.',                 1000.00,  '2026-04-12', 'medium', 'planned',    'Пользователь', NULL);
+
+-- =========================================================
+-- 11. CALENDAR EVENTS
+-- =========================================================
+
+CREATE TABLE calendar_events (
+  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  family_id INT(10) UNSIGNED NOT NULL,
+  user_id INT(10) UNSIGNED NOT NULL,
+  member_name VARCHAR(255) DEFAULT NULL,
+  title VARCHAR(255) NOT NULL,
+  description VARCHAR(1000) DEFAULT NULL,
+  event_type ENUM('event','birthday','reminder','task','wishlist_placeholder') NOT NULL DEFAULT 'event',
+  event_date DATE NOT NULL,
+  start_time TIME DEFAULT NULL,
+  end_time TIME DEFAULT NULL,
+  is_all_day TINYINT(1) NOT NULL DEFAULT 0,
+  is_recurring TINYINT(1) NOT NULL DEFAULT 0,
+  recurring_type ENUM('none','daily','weekly','monthly','yearly') NOT NULL DEFAULT 'none',
+  color VARCHAR(20) NOT NULL DEFAULT '#0d6efd',
+  is_completed TINYINT(1) NOT NULL DEFAULT 0,
+  completed_at DATETIME DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_calendar_events_family_date (family_id, event_date),
+  KEY idx_calendar_events_user_id (user_id),
+  KEY idx_calendar_events_type (event_type),
+  KEY idx_calendar_events_completed (family_id, event_date, is_completed),
+  CONSTRAINT fk_calendar_events_family
+    FOREIGN KEY (family_id) REFERENCES families(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_calendar_events_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO calendar_events
+(
+  id,
+  family_id,
+  user_id,
+  member_name,
+  title,
+  description,
+  event_type,
+  event_date,
+  start_time,
+  end_time,
+  is_all_day,
+  is_recurring,
+  recurring_type,
+  color,
+  is_completed,
+  completed_at
+)
+VALUES
+(1, 1, 1, 'Алексей', 'Оплатить интернет', 'Ежемесячная оплата домашнего интернета.', 'reminder', '2026-03-19', '10:00:00', '10:30:00', 0, 1, 'monthly', '#0d6efd', 1, '2026-03-19 09:20:00'),
+(2, 1, 1, 'Мария', 'Приём у стоматолога', 'Клиника SmileCare, кабинет 12.', 'event', '2026-03-19', '15:30:00', '16:30:00', 0, 0, 'none', '#dc3545', 0, NULL),
+(3, 1, 1, 'София', 'Подготовить школьную форму', 'Проверить одежду и собрать рюкзак.', 'task', '2026-03-19', '19:00:00', '19:30:00', 0, 0, 'none', '#fd7e14', 0, NULL),
+(4, 1, 1, 'Мария', 'День рождения мамы', 'Не забыть позвонить и отправить подарок.', 'birthday', '2026-03-20', NULL, NULL, 1, 1, 'yearly', '#e83e8c', 0, NULL),
+(5, 1, 1, 'Алексей', 'Семейный ужин', 'Бронь столика на 18:00.', 'event', '2026-03-20', '18:00:00', '20:00:00', 0, 0, 'none', '#198754', 0, NULL),
+(6, 1, 1, 'Алексей', 'Тренировка', 'Спортивный зал у дома.', 'task', '2026-03-21', '08:00:00', '09:00:00', 0, 1, 'weekly', '#20c997', 1, '2026-03-21 07:15:00'),
+(7, 1, 1, 'Мария', 'Купить подарок', 'Выбрать подарок ко дню рождения.', 'task', '2026-03-21', '13:00:00', '14:00:00', 0, 0, 'none', '#6f42c1', 0, NULL),
+(8, 1, 1, 'София', 'Школьный концерт', 'Прийти немного заранее.', 'event', '2026-03-21', '17:00:00', '18:30:00', 0, 0, 'none', '#ffc107', 0, NULL),
+(9, 1, 1, 'Алексей', 'Семейная прогулка', 'Парк и горячий шоколад.', 'event', '2026-03-22', '12:00:00', '14:00:00', 0, 0, 'none', '#0dcaf0', 0, NULL),
+(10, 1, 1, NULL, 'Записать идеи для WishList', 'Пока просто заметка под будущую интеграцию.', 'wishlist_placeholder', '2026-03-22', NULL, NULL, 1, 0, 'none', '#6c757d', 0, NULL),
+(11, 1, 1, 'Мария', 'Оплатить кружок', 'Оплата до конца дня.', 'reminder', '2026-03-23', '09:00:00', '09:15:00', 0, 0, 'none', '#6610f2', 0, NULL),
+(12, 1, 1, 'София', 'Подготовка к контрольной', 'Повторить математику и английский.', 'task', '2026-03-23', '17:30:00', '19:00:00', 0, 0, 'none', '#198754', 0, NULL),
+(13, 2, 2, 'Админ', 'Встреча с банком', 'Обсудить семейный счёт.', 'event', '2026-03-19', '11:00:00', '12:00:00', 0, 0, 'none', '#0d6efd', 0, NULL),
+(14, 2, 2, 'Админ', 'Позвонить родителям', 'Спросить про выходные.', 'reminder', '2026-03-20', '20:00:00', '20:15:00', 0, 0, 'none', '#fd7e14', 1, '2026-03-20 18:50:00'),
+(15, 3, 3, 'Пользователь', 'Составить план недели', 'Заполнить дневник на ближайшие дни.', 'task', '2026-03-19', '08:30:00', '09:00:00', 0, 0, 'none', '#198754', 0, NULL),
+(16, 3, 3, 'Пользователь', 'День рождения брата', 'Купить торт.', 'birthday', '2026-03-24', NULL, NULL, 1, 1, 'yearly', '#e83e8c', 0, NULL);
+
+-- =========================================================
+-- 12. AUTO_INCREMENT FIX
+-- =========================================================
+
+ALTER TABLE families AUTO_INCREMENT = 4;
+ALTER TABLE users AUTO_INCREMENT = 4;
+ALTER TABLE accounts AUTO_INCREMENT = 4;
+ALTER TABLE family_members AUTO_INCREMENT = 7;
 ALTER TABLE categories AUTO_INCREMENT = 25;
 ALTER TABLE transactions AUTO_INCREMENT = 24;
+ALTER TABLE wishlist AUTO_INCREMENT = 9;
+ALTER TABLE calendar_events AUTO_INCREMENT = 17;

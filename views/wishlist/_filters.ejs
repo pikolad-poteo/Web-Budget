@@ -1,0 +1,47 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body">
+    <form method="GET" action="/wishlist" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">Поиск</label>
+        <input
+          type="text"
+          name="q"
+          class="form-control"
+          value="<%= filters.q || '' %>"
+          placeholder="Название или описание"
+        >
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Статус</label>
+        <select name="status" class="form-select">
+          <option value="all" <%= filters.status === 'all' ? 'selected' : '' %>>Все</option>
+          <option value="planned" <%= filters.status === 'planned' ? 'selected' : '' %>>Запланировано</option>
+          <option value="postponed" <%= filters.status === 'postponed' ? 'selected' : '' %>>Отложено</option>
+          <option value="bought" <%= filters.status === 'bought' ? 'selected' : '' %>>Куплено</option>
+          <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected' : '' %>>Отменено</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Категория</label>
+        <select name="category_id" class="form-select">
+          <option value="all">Все категории</option>
+          <% categories.forEach(c => { %>
+            <option
+              value="<%= c.id %>"
+              <%= String(filters.category_id) === String(c.id) ? 'selected' : '' %>
+            >
+              <%= c.name %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-outline-dark">Применить</button>
+        <a href="/wishlist" class="btn btn-outline-secondary">Сбросить</a>
+      </div>
+    </form>
+  </div>
+</div>

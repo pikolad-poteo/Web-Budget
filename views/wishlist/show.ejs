@@ -1,0 +1,102 @@
+<%- include('../partials/header', { user, activePage: 'wishlist' }) %>
+
+<div class="mb-3">
+  <a href="/wishlist" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left me-1"></i>
+    Назад к wishlist
+  </a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm overflow-hidden">
+      <% if (item.image_url) { %>
+        <img
+          src="<%= item.image_url %>"
+          alt="<%= item.title %>"
+          class="wishlist-show-image"
+        >
+      <% } else { %>
+        <div class="wishlist-show-image wishlist-show-image-placeholder">
+          <i class="bi bi-image"></i>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+          <div>
+            <h2 class="mb-2"><%= item.title %></h2>
+            <div class="wishlist-show-price mb-2"><%= Number(item.amount).toFixed(2) %> €</div>
+
+            <div class="d-flex flex-wrap gap-2">
+              <span class="wishlist-status-badge wishlist-status-<%= item.status %>">
+                <% if (item.status === 'planned') { %>Запланировано<% } %>
+                <% if (item.status === 'postponed') { %>Отложено<% } %>
+                <% if (item.status === 'bought') { %>Куплено<% } %>
+                <% if (item.status === 'cancelled') { %>Отменено<% } %>
+              </span>
+
+              <% if (item.priority === 'high') { %>
+                <span class="badge bg-danger-subtle text-danger">Высокий приоритет</span>
+              <% } else if (item.priority === 'medium') { %>
+                <span class="badge bg-warning-subtle text-warning">Средний приоритет</span>
+              <% } else { %>
+                <span class="badge bg-secondary-subtle text-secondary">Низкий приоритет</span>
+              <% } %>
+            </div>
+          </div>
+
+          <% if (item.store_url) { %>
+            <div>
+              <a
+                href="<%= item.store_url %>"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-primary"
+              >
+                Перейти в магазин
+              </a>
+            </div>
+          <% } %>
+        </div>
+
+        <hr>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="text-muted small">Категория</div>
+            <div><%= item.category_name || 'Не указана' %></div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="text-muted small">Кто планирует</div>
+            <div><%= item.who || 'Не указано' %></div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="text-muted small">Планируемая дата</div>
+            <div><%= item.planned_date ? String(item.planned_date).slice(0, 10) : 'Не указана' %></div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="text-muted small">Создано</div>
+            <div><%= String(item.created_at).slice(0, 10) %></div>
+          </div>
+
+          <div class="col-12">
+            <div class="text-muted small">Описание</div>
+            <div><%= item.description || 'Описание не добавлено' %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('_edit_form', { item, members, categories }) %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
