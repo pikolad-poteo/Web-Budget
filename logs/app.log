@@ -1443,3 +1443,1665 @@ HTTP request
   "ip": "::1"
 }
 --------------------------------------------------
+[2026-04-09 09:55:56] INFO
+Server started on http://localhost:3000
+--------------------------------------------------
+[2026-04-09 09:55:58] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 500,
+  "durationMs": 14,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:57:05] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 302,
+  "durationMs": 26,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:57:05] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/login",
+  "statusCode": 200,
+  "durationMs": 5,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:57:15] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/login",
+  "statusCode": 302,
+  "durationMs": 252,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:57:15] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 25,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:57:17] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 200,
+  "durationMs": 18,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:57:20] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 34,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:57:21] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 200,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:57:25] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 23,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:58:32] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 402,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 09:58:32] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:00:04] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/1",
+  "statusCode": 404,
+  "durationMs": 5,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:00:06] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:00:08] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:00:17] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/1",
+  "statusCode": 404,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:00:19] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:23:48] INFO
+Server started on http://localhost:3000
+--------------------------------------------------
+[2026-04-09 10:23:54] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 302,
+  "durationMs": 28,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:23:54] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/login",
+  "statusCode": 200,
+  "durationMs": 7,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:24:02] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/login",
+  "statusCode": 302,
+  "durationMs": 237,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:24:02] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:24:04] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 22,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:25:15] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 197,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:25:15] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:34:40] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/3",
+  "statusCode": 200,
+  "durationMs": 15,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:35:15] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 16,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:35:30] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 348,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:35:30] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:37:57] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/3",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:38:00] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:38:53] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/3",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:39:08] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist/update/3",
+  "statusCode": 302,
+  "durationMs": 23,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:39:08] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/3",
+  "statusCode": 200,
+  "durationMs": 7,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:39:21] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 13,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:37] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 16,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:41] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 27,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:41] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 13,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:42] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:43] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:44] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 25,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:45] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 7,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:46] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:47] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/family",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:48] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:48] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:49] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:51] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:52] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 20,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:53] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 15,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:45:54] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:54:32] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 14,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:54:50] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:54:51] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:55:02] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 7,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:55:03] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:58:57] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/3",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 10:59:09] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:08:13] INFO
+Server started on http://localhost:3000
+--------------------------------------------------
+[2026-04-09 11:08:18] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 27,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:08:18] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/login",
+  "statusCode": 200,
+  "durationMs": 7,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:08:26] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/login",
+  "statusCode": 302,
+  "durationMs": 235,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:08:26] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:08:27] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 19,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:12:45] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 15,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:12:48] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 16,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:12:49] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 13,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:12:51] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 13,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:12:51] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:13:17] INFO
+Server started on http://localhost:3000
+--------------------------------------------------
+[2026-04-09 11:13:20] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 28,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:13:20] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/login",
+  "statusCode": 200,
+  "durationMs": 6,
+  "userId": null,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:13:28] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/login",
+  "statusCode": 302,
+  "durationMs": 236,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:13:28] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:13:29] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 20,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:21:03] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 17,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:21:16] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 14,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:21:20] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:21:35] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist?q=&status=all&category_id=6",
+  "statusCode": 200,
+  "durationMs": 13,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:21:40] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist?q=&status=all&category_id=all",
+  "statusCode": 200,
+  "durationMs": 13,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:00] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 7,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:03] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:04] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 29,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:05] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:05] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:06] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:09] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 22,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:10] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:11] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:12] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/family",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:14] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:15] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:16] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 7,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:17] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 21,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:18] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:19] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 13,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:19] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/family",
+  "statusCode": 304,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:21] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:21] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:29] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:31] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/1",
+  "statusCode": 200,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:22:35] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:24:53] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/preview-meta?url=https%3A%2F%2Fnoortehnik.ee%2Fru%2Fhertz-powersports-hmx-6-5-s-ld-niiskuskindlad-kolarid-must",
+  "statusCode": 302,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:24:53] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:24:56] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 384,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:24:56] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 4,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:03] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 15,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:19] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/preview-meta?url=https%3A%2F%2Fnoortehnik.ee%2Fru%2Fhertz-marine-hms-10-s4-ld-sw-rgb-niiskuskindel-bassikolar",
+  "statusCode": 302,
+  "durationMs": 3,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:19] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 4,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:20] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 284,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:20] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 5,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:32] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/preview-meta?url=https%3A%2F%2Fnoortehnik.ee%2Fru%2Fhertz-marine-hms-10-s4-ld-sw-rgb-niiskuskindel-bassikolar",
+  "statusCode": 302,
+  "durationMs": 4,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:32] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:33] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 372,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:33] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 3,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:39] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/5",
+  "statusCode": 200,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:46] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:49] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/5",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:53] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist/delete",
+  "statusCode": 302,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:53] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:57] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/preview-meta?url=https%3A%2F%2Fnoortehnik.ee%2Fru%2Fhertz-marine-hms-10-s4-ld-sw-rgb-niiskuskindel-bassikolar",
+  "statusCode": 302,
+  "durationMs": 4,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:57] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 5,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:59] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 332,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:25:59] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:03] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/preview-meta?url=https%3A%2F%2Fnoortehnik.ee%2Fru%2Fhertz-marine-hms-10-s4-ld-sw-rgb-niiskuskindel-bassikolar",
+  "statusCode": 302,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:04] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:13] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 356,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:13] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 4,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:17] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/6",
+  "statusCode": 200,
+  "durationMs": 8,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:24] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:26] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/6",
+  "statusCode": 304,
+  "durationMs": 7,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:32] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist/delete",
+  "statusCode": 302,
+  "durationMs": 5,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:32] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:39] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/preview-meta?url=https%3A%2F%2Fnoortehnik.ee%2Fru%2Fhertz-marine-hms-10-s4-ld-sw-rgb-niiskuskindel-bassikolar",
+  "statusCode": 302,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:39] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 12,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:41] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 298,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:41] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:46] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/preview-meta?url=https%3A%2F%2Fnoortehnik.ee%2Fru%2Fhertz-marine-hms-10-s4-ld-sw-rgb-niiskuskindel-bassikolar",
+  "statusCode": 302,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:46] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:48] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 304,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:48] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:51] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/7",
+  "statusCode": 200,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:55] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist/delete",
+  "statusCode": 302,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:26:55] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 11,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:32] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 6,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:32] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:33] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 4,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:33] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:33] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 4,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:33] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:34] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 4,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:34] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 10,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:34] INFO
+HTTP request
+{
+  "method": "POST",
+  "url": "/wishlist",
+  "statusCode": 302,
+  "durationMs": 5,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-09 11:27:34] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 9,
+  "userId": 1,
+  "ip": "::1"
+}
+--------------------------------------------------

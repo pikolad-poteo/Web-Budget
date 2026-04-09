@@ -21,17 +21,19 @@
             href="/wishlist/<%= item.id %>"
             class="wishlist-card-image-link"
           >
-            <% if (previewImage) { %>
-              <img
-                src="<%= previewImage %>"
-                alt="<%= item.title %>"
-                class="wishlist-card-image"
-              >
-            <% } else { %>
-              <div class="wishlist-card-image wishlist-card-image-placeholder">
-                <i class="bi bi-image"></i>
-              </div>
-            <% } %>
+            <div class="wishlist-card-image-frame">
+              <% if (previewImage) { %>
+                <img
+                  src="<%= previewImage %>"
+                  alt="<%= item.title %>"
+                  class="wishlist-card-image"
+                >
+              <% } else { %>
+                <div class="wishlist-card-image wishlist-card-image-placeholder">
+                  <i class="bi bi-image"></i>
+                </div>
+              <% } %>
+            </div>
           </a>
 
           <div class="card-body d-flex flex-column">

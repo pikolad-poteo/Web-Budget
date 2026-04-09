@@ -7,61 +7,45 @@
         <label class="form-label">Название *</label>
         <input
           type="text"
+          id="wishlist-title"
           name="title"
           class="form-control"
           placeholder="Например: iPad Air"
-          required
         >
       </div>
 
-      <div class="col-12">
+      <div class="col-md-8">
         <label class="form-label">Цена *</label>
         <input
           type="number"
           step="0.01"
+          id="wishlist-amount"
           name="amount"
           class="form-control"
           placeholder="0.00"
-          required
         >
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Приоритет</label>
+        <select name="priority" class="form-select">
+          <option value="low">Низкий</option>
+          <option value="medium" selected>Средний</option>
+          <option value="high">Высокий</option>
+        </select>
       </div>
 
       <div class="col-12">
         <label class="form-label">Ссылка на товар</label>
         <input
           type="text"
+          id="wishlist-store-url"
           name="store_url"
           class="form-control"
           placeholder="https://..."
         >
         <div class="form-text">
-          Можно вставить ссылку на страницу товара. Система попробует автоматически подтянуть главное изображение.
-        </div>
-      </div>
-
-      <div class="col-12">
-        <label class="form-label">Ссылка на изображение</label>
-        <input
-          type="text"
-          name="image_url"
-          class="form-control"
-          placeholder="https://..."
-        >
-        <div class="form-text">
-          Используйте это поле, если хотите сразу поставить свою картинку по ссылке.
-        </div>
-      </div>
-
-      <div class="col-12">
-        <label class="form-label">Загрузить фото с компьютера</label>
-        <input
-          type="file"
-          name="image_file"
-          class="form-control"
-          accept="image/*"
-        >
-        <div class="form-text">
-          Загруженный файл имеет приоритет над внешней ссылкой на изображение.
+          Можно вставить ссылку на страницу товара. Система попробует автоматически подтянуть главное изображение, цену и короткое название.
         </div>
       </div>
 
@@ -70,6 +54,34 @@
           <summary>Дополнительные поля</summary>
 
           <div class="row g-3 mt-2">
+            <div class="col-12">
+              <label class="form-label">Ссылка на изображение</label>
+              <input
+                type="text"
+                id="wishlist-image-url"
+                name="image_url"
+                class="form-control"
+                placeholder="https://..."
+              >
+              <div class="form-text">
+                Используйте это поле, если хотите сразу поставить свою картинку по ссылке.
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Загрузить фото с компьютера</label>
+              <input
+                type="file"
+                id="wishlist-image-file"
+                name="image_file"
+                class="form-control"
+                accept="image/*"
+              >
+              <div class="form-text">
+                Загруженный файл имеет приоритет над внешней ссылкой на изображение.
+              </div>
+            </div>
+
             <div class="col-12">
               <label class="form-label">Категория</label>
               <select name="category_id" class="form-select">
@@ -108,15 +120,6 @@
                 <% }) %>
               </select>
             </div>
-
-            <div class="col-12">
-              <label class="form-label">Приоритет</label>
-              <select name="priority" class="form-select">
-                <option value="low">Низкий</option>
-                <option value="medium" selected>Средний</option>
-                <option value="high">Высокий</option>
-              </select>
-            </div>
           </div>
         </details>
       </div>
@@ -129,3 +132,81 @@
     </form>
   </div>
 </div>
+
+<script>
+  (function () {
+    const storeUrlInput = document.getElementById('wishlist-store-url');
+    const titleInput = document.getElementById('wishlist-title');
+    const amountInput = document.getElementById('wishlist-amount');
+    const imageUrlInput = document.getElementById('wishlist-image-url');
+    const imageFileInput = document.getElementById('wishlist-image-file');
+
+    if (!storeUrlInput || !titleInput || !amountInput) return;
+
+    let titleTouched = false;
+    let amountTouched = false;
+    let requestTimer = null;
+    let lastFetchedUrl = '';
+
+    titleInput.addEventListener('input', function () {
+      if (titleInput.value.trim() !== '') {
+        titleTouched = true;
+      }
+    });
+
+    amountInput.addEventListener('input', function () {
+      if (amountInput.value.trim() !== '') {
+        amountTouched = true;
+      }
+    });
+
+    async function fetchPreviewMeta() {
+      const rawUrl = storeUrlInput.value.trim();
+      if (!rawUrl || rawUrl === lastFetchedUrl) return;
+
+      if (imageFileInput && imageFileInput.files && imageFileInput.files.length > 0) {
+        return;
+      }
+
+      lastFetchedUrl = rawUrl;
+
+      try {
+        const response = await fetch(`/wishlist/preview-meta?url=${encodeURIComponent(rawUrl)}`, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const data = await response.json();
+
+        if (!data || !data.ok) return;
+
+        if (!titleTouched && !titleInput.value.trim() && data.title) {
+          titleInput.value = data.title;
+        }
+
+        if (!amountTouched && !amountInput.value.trim() && data.amount) {
+          amountInput.value = data.amount;
+        }
+
+        if (
+          imageUrlInput &&
+          !imageUrlInput.value.trim() &&
+          !(imageFileInput && imageFileInput.files && imageFileInput.files.length > 0) &&
+          data.image
+        ) {
+          imageUrlInput.value = data.image;
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    storeUrlInput.addEventListener('blur', fetchPreviewMeta);
+
+    storeUrlInput.addEventListener('input', function () {
+      clearTimeout(requestTimer);
+      requestTimer = setTimeout(fetchPreviewMeta, 700);
+    });
+  })();
+</script>

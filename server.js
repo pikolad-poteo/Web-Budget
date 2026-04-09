@@ -60,9 +60,172 @@ function normalizeUrl(value) {
   return `https://${url}`;
 }
 
-async function tryExtractImageFromStoreUrl(storeUrl) {
+function cleanupProductTitle(rawTitle) {
+  let title = String(rawTitle || '').trim();
+  if (!title) return null;
+
+  title = title
+    .replace(/\s+/g, ' ')
+    .replace(/[|•]+.*$/u, '')
+    .replace(/\s+[–—-]\s+.*$/u, '')
+    .replace(/\s*\([^)]*\)\s*$/u, '')
+    .trim();
+
+  if (!title) return null;
+
+  const words = title.split(' ').filter(Boolean);
+  if (words.length === 0) return null;
+
+  const firstWord = words[0];
+  const firstTwoWords = words.slice(0, 2).join(' ');
+
+  if (firstTwoWords.length <= 20) {
+    return firstTwoWords;
+  }
+
+  return firstWord;
+}
+
+function normalizePriceValue(rawPrice) {
+  if (rawPrice === null || rawPrice === undefined) return null;
+
+  let value = String(rawPrice).trim();
+  if (!value) return null;
+
+  value = value
+    .replace(/\s/g, '')
+    .replace(/[^0-9,.\-]/g, '');
+
+  const commaCount = (value.match(/,/g) || []).length;
+  const dotCount = (value.match(/\./g) || []).length;
+
+  if (commaCount > 0 && dotCount > 0) {
+    if (value.lastIndexOf(',') > value.lastIndexOf('.')) {
+      value = value.replace(/\./g, '').replace(',', '.');
+    } else {
+      value = value.replace(/,/g, '');
+    }
+  } else if (commaCount > 0 && dotCount === 0) {
+    value = value.replace(',', '.');
+  }
+
+  const parsed = parseFloat(value);
+  if (Number.isNaN(parsed) || parsed <= 0) return null;
+
+  return parsed.toFixed(2);
+}
+
+function extractJsonLdProductData($) {
+  const scripts = $('script[type="application/ld+json"]');
+  let found = {
+    title: null,
+    price: null,
+    image: null,
+  };
+
+  scripts.each((_, el) => {
+    if (found.title && found.price && found.image) return;
+
+    try {
+      const raw = $(el).contents().text().trim();
+      if (!raw) return;
+
+      const parsed = JSON.parse(raw);
+
+      const queue = Array.isArray(parsed) ? [...parsed] : [parsed];
+
+      while (queue.length) {
+        const node = queue.shift();
+        if (!node || typeof node !== 'object') continue;
+
+        if (Array.isArray(node)) {
+          queue.push(...node);
+          continue;
+        }
+
+        if (node['@graph'] && Array.isArray(node['@graph'])) {
+          queue.push(...node['@graph']);
+        }
+
+        const typeValue = Array.isArray(node['@type'])
+          ? node['@type'].join(' ')
+          : String(node['@type'] || '').toLowerCase();
+
+        const looksLikeProduct = typeValue.includes('product');
+
+        if (looksLikeProduct) {
+          if (!found.title && node.name) {
+            found.title = String(node.name).trim();
+          }
+
+          if (!found.image) {
+            if (typeof node.image === 'string') {
+              found.image = node.image;
+            } else if (Array.isArray(node.image) && node.image.length > 0) {
+              found.image = typeof node.image[0] === 'string'
+                ? node.image[0]
+                : node.image[0]?.url || null;
+            } else if (node.image && typeof node.image === 'object' && node.image.url) {
+              found.image = node.image.url;
+            }
+          }
+
+          if (!found.price && node.offers) {
+            const offers = Array.isArray(node.offers) ? node.offers[0] : node.offers;
+            if (offers) {
+              found.price =
+                offers.price ||
+                offers.lowPrice ||
+                offers.highPrice ||
+                null;
+            }
+          }
+        }
+
+        for (const key of Object.keys(node)) {
+          const value = node[key];
+          if (value && typeof value === 'object') {
+            queue.push(value);
+          }
+        }
+      }
+    } catch (err) {
+      // молча пропускаем кривой JSON-LD
+    }
+  });
+
+  return found;
+}
+
+function absolutizeUrlMaybe(value, baseUrl) {
+  const raw = String(value || '').trim();
+  if (!raw) return null;
+
+  if (raw.startsWith('//')) {
+    return 'https:' + raw;
+  }
+
+  if (raw.startsWith('/')) {
+    try {
+      const base = new URL(baseUrl);
+      return `${base.protocol}//${base.host}${raw}`;
+    } catch (err) {
+      return raw;
+    }
+  }
+
+  return raw;
+}
+
+async function tryExtractProductDataFromStoreUrl(storeUrl) {
   const normalized = normalizeUrl(storeUrl);
-  if (!normalized) return null;
+  if (!normalized) {
+    return {
+      title: null,
+      amount: null,
+      image: null,
+    };
+  }
 
   try {
     const response = await fetch(normalized, {
@@ -71,32 +234,64 @@ async function tryExtractImageFromStoreUrl(storeUrl) {
       },
     });
 
-    if (!response.ok) return null;
+    if (!response.ok) {
+      return {
+        title: null,
+        amount: null,
+        image: null,
+      };
+    }
 
     const html = await response.text();
     const $ = cheerio.load(html);
 
+    const jsonLd = extractJsonLdProductData($);
+
+    let title =
+      jsonLd.title ||
+      $('meta[property="og:title"]').attr('content') ||
+      $('meta[name="twitter:title"]').attr('content') ||
+      $('title').text() ||
+      null;
+
     let image =
+      jsonLd.image ||
       $('meta[property="og:image"]').attr('content') ||
       $('meta[name="twitter:image"]').attr('content') ||
       $('img').first().attr('src') ||
       null;
 
-    if (!image) return null;
+    let price =
+      jsonLd.price ||
+      $('meta[property="product:price:amount"]').attr('content') ||
+      $('meta[property="og:price:amount"]').attr('content') ||
+      $('[itemprop="price"]').attr('content') ||
+      $('[itemprop="price"]').text() ||
+      $('.price').first().text() ||
+      $('[class*="price"]').first().text() ||
+      null;
 
-    image = String(image).trim();
+    title = cleanupProductTitle(title);
+    price = normalizePriceValue(price);
+    image = absolutizeUrlMaybe(image, normalized);
 
-    if (image.startsWith('//')) {
-      image = 'https:' + image;
-    } else if (image.startsWith('/')) {
-      const base = new URL(normalized);
-      image = `${base.protocol}//${base.host}${image}`;
-    }
-
-    return image;
+    return {
+      title,
+      amount: price,
+      image,
+    };
   } catch (err) {
-    return null;
+    return {
+      title: null,
+      amount: null,
+      image: null,
+    };
   }
+}
+
+async function tryExtractImageFromStoreUrl(storeUrl) {
+  const product = await tryExtractProductDataFromStoreUrl(storeUrl);
+  return product.image || null;
 }
 
 function getWishlistImage(item) {
@@ -1210,6 +1405,137 @@ app.get('/wishlist', requireLogin, async (req, res) => {
   }
 });
 
+app.get('/wishlist/:id', requireLogin, async (req, res) => {
+  const user = req.user;
+  const userId = user.id;
+
+  try {
+    const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
+    const { id } = req.params;
+
+    const [memberRows] = await pool.execute(
+      `
+      SELECT id, name
+      FROM family_members
+      WHERE family_id = ?
+      ORDER BY id ASC
+      `,
+      [familyId]
+    );
+
+    if (memberRows.length === 0) {
+      return res.redirect('/family');
+    }
+
+    const [categories] = await pool.execute(
+      `
+      SELECT *
+      FROM categories
+      WHERE (family_id = ? OR family_id IS NULL)
+        AND type = 'expense'
+      ORDER BY name ASC
+      `,
+      [familyId]
+    );
+
+    const [rows] = await pool.execute(
+      `
+      SELECT
+        w.*,
+        c.name AS category_name,
+        c.color AS category_color,
+        c.icon AS category_icon
+      FROM wishlist w
+      LEFT JOIN categories c ON c.id = w.category_id
+      WHERE w.id = ?
+        AND w.family_id = ?
+        AND w.account_id = ?
+      LIMIT 1
+      `,
+      [id, familyId, accountId]
+    );
+
+    if (rows.length === 0) {
+      return res.redirect('/wishlist');
+    }
+
+    res.render('wishlist/show', {
+      user,
+      item: rows[0],
+      members: memberRows,
+      categories,
+      activePage: 'wishlist',
+    });
+  } catch (err) {
+    logError(err, req, { type: 'wishlist_show' });
+
+    return res.status(500).render('errors/500', {
+      user: req.user || null,
+    });
+  }
+});
+
+app.post('/wishlist/status', requireLogin, async (req, res) => {
+  const user = req.user;
+  const userId = user.id;
+
+  try {
+    const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
+    let { id, status } = req.body;
+
+    status = ['planned', 'postponed', 'bought', 'cancelled'].includes(status)
+      ? status
+      : 'planned';
+
+    await pool.execute(
+      `
+      UPDATE wishlist
+      SET status = ?
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      `,
+      [status, id, familyId, accountId]
+    );
+
+    res.redirect(`/wishlist/${id}`);
+  } catch (err) {
+    logError(err, req, { type: 'wishlist_status_update' });
+
+    return res.status(500).render('errors/500', {
+      user: req.user || null,
+    });
+  }
+});
+
+app.post('/wishlist/delete', requireLogin, async (req, res) => {
+  const user = req.user;
+  const userId = user.id;
+
+  try {
+    const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
+    const { id } = req.body;
+
+    await pool.execute(
+      `
+      DELETE FROM wishlist
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      `,
+      [id, familyId, accountId]
+    );
+
+    res.redirect('/wishlist');
+  } catch (err) {
+    logError(err, req, { type: 'wishlist_delete' });
+
+    return res.status(500).render('errors/500', {
+      user: req.user || null,
+    });
+  }
+});
+
 app.post('/wishlist/update/:id', requireLogin, wishlistUpload.single('image_file'), async (req, res) => {
   const user = req.user;
   const userId = user.id;
@@ -1254,6 +1580,7 @@ app.post('/wishlist/update/:id', requireLogin, wishlistUpload.single('image_file
     planned_date = String(planned_date || '').trim() || null;
     who = String(who || '').trim() || null;
     store_url = normalizeUrl(store_url);
+    image_url = normalizeUrl(image_url);
 
     if (category_id === '' || category_id === 'none') {
       category_id = null;
@@ -1265,25 +1592,49 @@ app.post('/wishlist/update/:id', requireLogin, wishlistUpload.single('image_file
       : 'planned';
 
     const parsedAmount = parseFloat(amount);
+    const hasManualTitle = !!title;
+    const hasManualAmount = !Number.isNaN(parsedAmount) && parsedAmount > 0;
+    const hasManualImage = !!req.file || !!image_url;
 
-    if (!title || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-      return res.redirect(`/wishlist/${id}`);
+    let extracted = {
+      title: null,
+      amount: null,
+      image: null,
+    };
+
+    if (store_url && !req.file) {
+      extracted = await tryExtractProductDataFromStoreUrl(store_url);
+    }
+
+    if (!hasManualTitle && extracted.title) {
+      title = extracted.title;
+    }
+
+    let finalAmount = hasManualAmount ? parsedAmount : Number(existingItem.amount || 0);
+    if ((!finalAmount || Number.isNaN(finalAmount) || finalAmount <= 0) && extracted.amount) {
+      finalAmount = parseFloat(extracted.amount);
+    }
+
+    if (!title) {
+      title = String(existingItem.title || '').trim();
     }
 
     let finalImageUrl = existingItem.image_url || null;
     let finalImageLocalPath = existingItem.image_local_path || null;
 
-    const normalizedImageUrl = normalizeUrl(image_url);
-
     if (req.file) {
       finalImageLocalPath = `/uploads/wishlist/${req.file.filename}`;
       finalImageUrl = null;
-    } else if (normalizedImageUrl) {
-      finalImageUrl = normalizedImageUrl;
+    } else if (image_url) {
+      finalImageUrl = image_url;
       finalImageLocalPath = null;
-    } else if (!existingItem.image_local_path && !existingItem.image_url && store_url) {
-      finalImageUrl = await tryExtractImageFromStoreUrl(store_url);
+    } else if (!hasManualImage && !existingItem.image_local_path && !existingItem.image_url && extracted.image) {
+      finalImageUrl = extracted.image;
       finalImageLocalPath = null;
+    }
+
+    if (!title || !finalAmount || Number.isNaN(finalAmount) || finalAmount <= 0) {
+      return res.redirect(`/wishlist/${id}`);
     }
 
     await pool.execute(
@@ -1309,7 +1660,7 @@ app.post('/wishlist/update/:id', requireLogin, wishlistUpload.single('image_file
         category_id,
         title,
         description,
-        parsedAmount,
+        finalAmount,
         planned_date,
         priority,
         status,
@@ -1357,6 +1708,7 @@ app.post('/wishlist', requireLogin, wishlistUpload.single('image_file'), async (
     planned_date = String(planned_date || '').trim() || null;
     who = String(who || '').trim() || null;
     store_url = normalizeUrl(store_url);
+    image_url = normalizeUrl(image_url);
 
     if (category_id === '' || category_id === 'none') {
       category_id = null;
@@ -1364,20 +1716,42 @@ app.post('/wishlist', requireLogin, wishlistUpload.single('image_file'), async (
 
     priority = ['low', 'medium', 'high'].includes(priority) ? priority : 'medium';
 
+    const hasManualImage = !!req.file || !!image_url;
+    const hasManualTitle = !!title;
     const parsedAmount = parseFloat(amount);
+    const hasManualAmount = !Number.isNaN(parsedAmount) && parsedAmount > 0;
 
-    if (!title || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-      return res.redirect('/wishlist');
+    let extracted = {
+      title: null,
+      amount: null,
+      image: null,
+    };
+
+    if (store_url && !req.file) {
+      extracted = await tryExtractProductDataFromStoreUrl(store_url);
     }
 
-    let finalImageUrl = normalizeUrl(image_url);
+    if (!hasManualTitle && extracted.title) {
+      title = extracted.title;
+    }
+
+    let finalAmount = hasManualAmount ? parsedAmount : null;
+    if (!finalAmount && extracted.amount) {
+      finalAmount = parseFloat(extracted.amount);
+    }
+
+    let finalImageUrl = image_url || null;
     let finalImageLocalPath = null;
 
     if (req.file) {
       finalImageLocalPath = `/uploads/wishlist/${req.file.filename}`;
       finalImageUrl = null;
-    } else if (!finalImageUrl && store_url) {
-      finalImageUrl = await tryExtractImageFromStoreUrl(store_url);
+    } else if (!hasManualImage && extracted.image) {
+      finalImageUrl = extracted.image;
+    }
+
+    if (!title || !finalAmount || Number.isNaN(finalAmount) || finalAmount <= 0) {
+      return res.redirect('/wishlist');
     }
 
     await pool.execute(
@@ -1408,7 +1782,7 @@ app.post('/wishlist', requireLogin, wishlistUpload.single('image_file'), async (
         category_id,
         title,
         description,
-        parsedAmount,
+        finalAmount,
         planned_date,
         priority,
         who,
@@ -1424,6 +1798,37 @@ app.post('/wishlist', requireLogin, wishlistUpload.single('image_file'), async (
 
     return res.status(500).render('errors/500', {
       user: req.user || null,
+    });
+  }
+});
+
+app.get('/wishlist/preview-meta', requireLogin, async (req, res) => {
+  try {
+    const storeUrl = normalizeUrl(req.query.url);
+
+    if (!storeUrl) {
+      return res.json({
+        ok: false,
+        title: null,
+        amount: null,
+        image: null,
+      });
+    }
+
+    const data = await tryExtractProductDataFromStoreUrl(storeUrl);
+
+    return res.json({
+      ok: true,
+      title: data.title || null,
+      amount: data.amount || null,
+      image: data.image || null,
+    });
+  } catch (err) {
+    return res.json({
+      ok: false,
+      title: null,
+      amount: null,
+      image: null,
     });
   }
 });
