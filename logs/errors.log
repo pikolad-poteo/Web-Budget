@@ -1,0 +1,246 @@
+[2026-04-08 17:01:43] ERROR
+Method: GET
+URL: /
+IP: ::1
+User ID: -
+Query: {}
+Params: {}
+Body: {}
+Message: Unknown database 'web_budget'
+Stack: Error: Unknown database 'web_budget'
+    at PromisePool.query (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at checkDatabase (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/checkDatabase.js:6:16)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:297:9
+    at processParams (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:582:12)
+    at next (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:291:5)
+    at requestLogger (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/logger.js:142:3)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+Extra: {
+  "type": "database_connection_check"
+}
+--------------------------------------------------
+[2026-04-08 17:01:43] ERROR
+Method: GET
+URL: /favicon.ico
+IP: ::1
+User ID: -
+Query: {}
+Params: {}
+Body: {}
+Message: Unknown database 'web_budget'
+Stack: Error: Unknown database 'web_budget'
+    at PromisePool.query (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at checkDatabase (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/checkDatabase.js:6:16)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:297:9
+    at processParams (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:582:12)
+    at next (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:291:5)
+    at requestLogger (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/logger.js:142:3)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+Extra: {
+  "type": "database_connection_check"
+}
+--------------------------------------------------
+[2026-04-08 17:02:56] ERROR
+Method: GET
+URL: /
+IP: ::1
+User ID: -
+Query: {}
+Params: {}
+Body: {}
+Message: Unknown database 'web_budget'
+Stack: Error: Unknown database 'web_budget'
+    at PromisePool.query (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at checkDatabase (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/checkDatabase.js:6:16)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:297:9
+    at processParams (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:582:12)
+    at next (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:291:5)
+    at requestLogger (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/logger.js:142:3)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+Extra: {
+  "type": "database_connection_check"
+}
+--------------------------------------------------
+[2026-04-08 17:02:57] ERROR
+Method: GET
+URL: /
+IP: ::1
+User ID: -
+Query: {}
+Params: {}
+Body: {}
+Message: Unknown database 'web_budget'
+Stack: Error: Unknown database 'web_budget'
+    at PromisePool.query (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at checkDatabase (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/checkDatabase.js:6:16)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:297:9
+    at processParams (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:582:12)
+    at next (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:291:5)
+    at requestLogger (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/logger.js:142:3)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+Extra: {
+  "type": "database_connection_check"
+}
+--------------------------------------------------
+[2026-04-08 17:02:58] ERROR
+Method: GET
+URL: /
+IP: ::1
+User ID: -
+Query: {}
+Params: {}
+Body: {}
+Message: Unknown database 'web_budget'
+Stack: Error: Unknown database 'web_budget'
+    at PromisePool.query (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at checkDatabase (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/checkDatabase.js:6:16)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:297:9
+    at processParams (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:582:12)
+    at next (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:291:5)
+    at requestLogger (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/logger.js:142:3)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+Extra: {
+  "type": "database_connection_check"
+}
+--------------------------------------------------
+[2026-04-08 17:03:00] ERROR
+Method: GET
+URL: /
+IP: ::1
+User ID: -
+Query: {}
+Params: {}
+Body: {}
+Message: Unknown database 'web_budget'
+Stack: Error: Unknown database 'web_budget'
+    at PromisePool.query (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at checkDatabase (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/checkDatabase.js:6:16)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:297:9
+    at processParams (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:582:12)
+    at next (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:291:5)
+    at requestLogger (/Users/vtensionx/Documents/Programmer Files/Web-Budget/src/logger.js:142:3)
+    at Layer.handleRequest (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
+Extra: {
+  "type": "database_connection_check"
+}
+--------------------------------------------------
+[2026-04-08 17:09:08] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------
+[2026-04-08 17:09:16] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------
+[2026-04-08 17:09:17] ERROR
+Method: GET
+URL: /wishlist
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.wishlist' doesn't exist
+Stack: Error: Table 'web_budget.wishlist' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:1067:35
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "wishlist_index"
+}
+--------------------------------------------------
+[2026-04-08 17:09:25] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------
+[2026-04-08 17:09:26] ERROR
+Method: GET
+URL: /wishlist
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.wishlist' doesn't exist
+Stack: Error: Table 'web_budget.wishlist' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:1067:35
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "wishlist_index"
+}
+--------------------------------------------------
+[2026-04-08 17:09:27] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------

@@ -2,7 +2,7 @@
   <div class="card-body">
     <h5 class="card-title mb-3">Быстро добавить</h5>
 
-    <form method="POST" action="/wishlist" class="row g-3">
+    <form method="POST" action="/wishlist" class="row g-3" enctype="multipart/form-data">
       <div class="col-12">
         <label class="form-label">Название *</label>
         <input
@@ -27,23 +27,42 @@
       </div>
 
       <div class="col-12">
-        <label class="form-label">Фото товара</label>
-        <input
-          type="text"
-          name="image_url"
-          class="form-control"
-          placeholder="https://..."
-        >
-      </div>
-
-      <div class="col-12">
-        <label class="form-label">Ссылка на магазин</label>
+        <label class="form-label">Ссылка на товар</label>
         <input
           type="text"
           name="store_url"
           class="form-control"
           placeholder="https://..."
         >
+        <div class="form-text">
+          Можно вставить ссылку на страницу товара. Система попробует автоматически подтянуть главное изображение.
+        </div>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Ссылка на изображение</label>
+        <input
+          type="text"
+          name="image_url"
+          class="form-control"
+          placeholder="https://..."
+        >
+        <div class="form-text">
+          Используйте это поле, если хотите сразу поставить свою картинку по ссылке.
+        </div>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Загрузить фото с компьютера</label>
+        <input
+          type="file"
+          name="image_file"
+          class="form-control"
+          accept="image/*"
+        >
+        <div class="form-text">
+          Загруженный файл имеет приоритет над внешней ссылкой на изображение.
+        </div>
       </div>
 
       <div class="col-12">
@@ -73,7 +92,11 @@
 
             <div class="col-md-6">
               <label class="form-label">Дата</label>
-              <input type="date" name="planned_date" class="form-control">
+              <input
+                type="date"
+                name="planned_date"
+                class="form-control"
+              >
             </div>
 
             <div class="col-md-6">

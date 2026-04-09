@@ -11,15 +11,19 @@
 <% } else { %>
   <div class="row g-4">
     <% wishlist.forEach(item => { %>
+      <%
+        const previewImage = item.image_local_path || item.image_url || null;
+      %>
+
       <div class="col-xl-3 col-lg-4 col-md-6">
         <div class="card border-0 shadow-sm h-100 wishlist-card">
           <a
             href="/wishlist/<%= item.id %>"
             class="wishlist-card-image-link"
           >
-            <% if (item.image_url) { %>
+            <% if (previewImage) { %>
               <img
-                src="<%= item.image_url %>"
+                src="<%= previewImage %>"
                 alt="<%= item.title %>"
                 class="wishlist-card-image"
               >

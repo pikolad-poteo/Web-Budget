@@ -12,8 +12,96 @@ const {
 } = require('./src/auth');
 const { attachUser, requireLogin } = require('./src/middleware');
 const pool = require('./src/db');
+const fs = require('fs');
+const multer = require('multer');
+const cheerio = require('cheerio');
 
 const app = express();
+
+const wishlistUploadDir = path.join(__dirname, 'public', 'uploads', 'wishlist');
+
+if (!fs.existsSync(wishlistUploadDir)) {
+  fs.mkdirSync(wishlistUploadDir, { recursive: true });
+}
+
+const wishlistStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, wishlistUploadDir);
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname || '').toLowerCase() || '.jpg';
+    const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    cb(null, safeName);
+  },
+});
+
+const wishlistUpload = multer({
+  storage: wishlistStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+  fileFilter: function (req, file, cb) {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (allowed.includes(file.mimetype)) {
+      return cb(null, true);
+    }
+    cb(new Error('Можно загружать только изображения.'));
+  },
+});
+
+function normalizeUrl(value) {
+  const url = String(value || '').trim();
+  if (!url) return null;
+
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  return `https://${url}`;
+}
+
+async function tryExtractImageFromStoreUrl(storeUrl) {
+  const normalized = normalizeUrl(storeUrl);
+  if (!normalized) return null;
+
+  try {
+    const response = await fetch(normalized, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 Web Budget Wishlist Bot',
+      },
+    });
+
+    if (!response.ok) return null;
+
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    let image =
+      $('meta[property="og:image"]').attr('content') ||
+      $('meta[name="twitter:image"]').attr('content') ||
+      $('img').first().attr('src') ||
+      null;
+
+    if (!image) return null;
+
+    image = String(image).trim();
+
+    if (image.startsWith('//')) {
+      image = 'https:' + image;
+    } else if (image.startsWith('/')) {
+      const base = new URL(normalized);
+      image = `${base.protocol}//${base.host}${image}`;
+    }
+
+    return image;
+  } catch (err) {
+    return null;
+  }
+}
+
+function getWishlistImage(item) {
+  return item.image_local_path || item.image_url || null;
+}
 
 // ================== НАСТРОЙКИ ==================
 
@@ -1122,7 +1210,7 @@ app.get('/wishlist', requireLogin, async (req, res) => {
   }
 });
 
-app.get('/wishlist/:id', requireLogin, async (req, res) => {
+app.post('/wishlist/update/:id', requireLogin, wishlistUpload.single('image_file'), async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
@@ -1130,159 +1218,23 @@ app.get('/wishlist/:id', requireLogin, async (req, res) => {
     const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
     const { id } = req.params;
 
-    const [members] = await pool.execute(
-      `
-      SELECT id, name
-      FROM family_members
-      WHERE family_id = ?
-      ORDER BY id ASC
-      `,
-      [familyId]
-    );
-
-    const [categories] = await pool.execute(
+    const [existingRows] = await pool.execute(
       `
       SELECT *
-      FROM categories
-      WHERE (family_id = ? OR family_id IS NULL)
-        AND type = 'expense'
-      ORDER BY name ASC
-      `,
-      [familyId]
-    );
-
-    const [rows] = await pool.execute(
-      `
-      SELECT
-        w.*,
-        c.name AS category_name,
-        c.color AS category_color,
-        c.icon AS category_icon
-      FROM wishlist w
-      LEFT JOIN categories c ON c.id = w.category_id
-      WHERE w.id = ?
-        AND w.family_id = ?
-        AND w.account_id = ?
+      FROM wishlist
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
       LIMIT 1
       `,
       [id, familyId, accountId]
     );
 
-    if (rows.length === 0) {
-      return res.status(404).render('errors/404', {
-        user: req.user || null,
-      });
-    }
-
-    const item = rows[0];
-
-    res.render('wishlist/show', {
-      user,
-      item,
-      members,
-      categories,
-      activePage: 'wishlist',
-    });
-  } catch (err) {
-    logError(err, req, { type: 'wishlist_show' });
-
-    return res.status(500).render('errors/500', {
-      user: req.user || null,
-    });
-  }
-});
-
-app.post('/wishlist', requireLogin, async (req, res) => {
-  const user = req.user;
-  const userId = user.id;
-
-  try {
-    const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
-
-    let {
-      title,
-      amount,
-      image_url,
-      store_url,
-      category_id,
-      description,
-      planned_date,
-      who,
-      priority,
-    } = req.body;
-
-    title = String(title || '').trim();
-    description = String(description || '').trim() || null;
-    planned_date = String(planned_date || '').trim() || null;
-    who = String(who || '').trim() || null;
-    image_url = normalizeUrl(image_url);
-    store_url = normalizeUrl(store_url);
-
-    if (category_id === '' || category_id === 'none') {
-      category_id = null;
-    }
-
-    priority = ['low', 'medium', 'high'].includes(priority) ? priority : 'medium';
-
-    const parsedAmount = parseFloat(amount);
-
-    if (!title || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+    if (existingRows.length === 0) {
       return res.redirect('/wishlist');
     }
 
-    await pool.execute(
-      `
-      INSERT INTO wishlist
-        (
-          family_id,
-          account_id,
-          user_id,
-          category_id,
-          title,
-          description,
-          amount,
-          planned_date,
-          priority,
-          status,
-          who,
-          store_url,
-          image_url
-        )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'planned', ?, ?, ?)
-      `,
-      [
-        familyId,
-        accountId,
-        userId,
-        category_id,
-        title,
-        description,
-        parsedAmount,
-        planned_date,
-        priority,
-        who,
-        store_url,
-        image_url,
-      ]
-    );
-
-    res.redirect('/wishlist');
-  } catch (err) {
-    logError(err, req, { type: 'wishlist_create' });
-
-    return res.status(500).render('errors/500', {
-      user: req.user || null,
-    });
-  }
-});
-
-app.post('/wishlist/update/:id', requireLogin, async (req, res) => {
-  const user = req.user;
-  const userId = user.id;
-
-  try {
-    const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
-    const { id } = req.params;
+    const existingItem = existingRows[0];
 
     let {
       title,
@@ -1301,7 +1253,6 @@ app.post('/wishlist/update/:id', requireLogin, async (req, res) => {
     description = String(description || '').trim() || null;
     planned_date = String(planned_date || '').trim() || null;
     who = String(who || '').trim() || null;
-    image_url = normalizeUrl(image_url);
     store_url = normalizeUrl(store_url);
 
     if (category_id === '' || category_id === 'none') {
@@ -1319,6 +1270,22 @@ app.post('/wishlist/update/:id', requireLogin, async (req, res) => {
       return res.redirect(`/wishlist/${id}`);
     }
 
+    let finalImageUrl = existingItem.image_url || null;
+    let finalImageLocalPath = existingItem.image_local_path || null;
+
+    const normalizedImageUrl = normalizeUrl(image_url);
+
+    if (req.file) {
+      finalImageLocalPath = `/uploads/wishlist/${req.file.filename}`;
+      finalImageUrl = null;
+    } else if (normalizedImageUrl) {
+      finalImageUrl = normalizedImageUrl;
+      finalImageLocalPath = null;
+    } else if (!existingItem.image_local_path && !existingItem.image_url && store_url) {
+      finalImageUrl = await tryExtractImageFromStoreUrl(store_url);
+      finalImageLocalPath = null;
+    }
+
     await pool.execute(
       `
       UPDATE wishlist
@@ -1332,7 +1299,8 @@ app.post('/wishlist/update/:id', requireLogin, async (req, res) => {
         status = ?,
         who = ?,
         store_url = ?,
-        image_url = ?
+        image_url = ?,
+        image_local_path = ?
       WHERE id = ?
         AND family_id = ?
         AND account_id = ?
@@ -1347,7 +1315,8 @@ app.post('/wishlist/update/:id', requireLogin, async (req, res) => {
         status,
         who,
         store_url,
-        image_url,
+        finalImageUrl,
+        finalImageLocalPath,
         id,
         familyId,
         accountId,
@@ -1364,66 +1333,94 @@ app.post('/wishlist/update/:id', requireLogin, async (req, res) => {
   }
 });
 
-app.post('/wishlist/status', requireLogin, async (req, res) => {
+app.post('/wishlist', requireLogin, wishlistUpload.single('image_file'), async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
   try {
     const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
-    const { id, status } = req.body;
 
-    const allowedStatuses = ['planned', 'postponed', 'bought', 'cancelled'];
+    let {
+      title,
+      amount,
+      image_url,
+      store_url,
+      category_id,
+      description,
+      planned_date,
+      who,
+      priority,
+    } = req.body;
 
-    if (!id || !allowedStatuses.includes(status)) {
+    title = String(title || '').trim();
+    description = String(description || '').trim() || null;
+    planned_date = String(planned_date || '').trim() || null;
+    who = String(who || '').trim() || null;
+    store_url = normalizeUrl(store_url);
+
+    if (category_id === '' || category_id === 'none') {
+      category_id = null;
+    }
+
+    priority = ['low', 'medium', 'high'].includes(priority) ? priority : 'medium';
+
+    const parsedAmount = parseFloat(amount);
+
+    if (!title || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
       return res.redirect('/wishlist');
+    }
+
+    let finalImageUrl = normalizeUrl(image_url);
+    let finalImageLocalPath = null;
+
+    if (req.file) {
+      finalImageLocalPath = `/uploads/wishlist/${req.file.filename}`;
+      finalImageUrl = null;
+    } else if (!finalImageUrl && store_url) {
+      finalImageUrl = await tryExtractImageFromStoreUrl(store_url);
     }
 
     await pool.execute(
       `
-      UPDATE wishlist
-      SET status = ?
-      WHERE id = ?
-        AND family_id = ?
-        AND account_id = ?
+      INSERT INTO wishlist
+        (
+          family_id,
+          account_id,
+          user_id,
+          category_id,
+          title,
+          description,
+          amount,
+          planned_date,
+          priority,
+          status,
+          who,
+          store_url,
+          image_url,
+          image_local_path
+        )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'planned', ?, ?, ?, ?)
       `,
-      [status, id, familyId, accountId]
-    );
-
-    res.redirect(`/wishlist/${id}`);
-  } catch (err) {
-    logError(err, req, { type: 'wishlist_status_update' });
-
-    return res.status(500).render('errors/500', {
-      user: req.user || null,
-    });
-  }
-});
-
-app.post('/wishlist/delete', requireLogin, async (req, res) => {
-  const user = req.user;
-  const userId = user.id;
-
-  try {
-    const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
-    const { id } = req.body;
-
-    if (!id) {
-      return res.redirect('/wishlist');
-    }
-
-    await pool.execute(
-      `
-      DELETE FROM wishlist
-      WHERE id = ?
-        AND family_id = ?
-        AND account_id = ?
-      `,
-      [id, familyId, accountId]
+      [
+        familyId,
+        accountId,
+        userId,
+        category_id,
+        title,
+        description,
+        parsedAmount,
+        planned_date,
+        priority,
+        who,
+        store_url,
+        finalImageUrl,
+        finalImageLocalPath,
+      ]
     );
 
     res.redirect('/wishlist');
   } catch (err) {
-    logError(err, req, { type: 'wishlist_delete' });
+    logError(err, req, { type: 'wishlist_create' });
 
     return res.status(500).render('errors/500', {
       user: req.user || null,

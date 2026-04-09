@@ -1,5 +1,9 @@
 <%- include('../partials/header', { user, activePage: 'wishlist' }) %>
 
+<%
+  const previewImage = item.image_local_path || item.image_url || null;
+%>
+
 <div class="mb-3">
   <a href="/wishlist" class="btn btn-outline-secondary btn-sm">
     <i class="bi bi-arrow-left me-1"></i>
@@ -10,9 +14,9 @@
 <div class="row g-4">
   <div class="col-lg-5">
     <div class="card border-0 shadow-sm overflow-hidden">
-      <% if (item.image_url) { %>
+      <% if (previewImage) { %>
         <img
-          src="<%= item.image_url %>"
+          src="<%= previewImage %>"
           alt="<%= item.title %>"
           class="wishlist-show-image"
         >

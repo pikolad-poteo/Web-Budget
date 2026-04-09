@@ -2,7 +2,7 @@
   <div class="card-body">
     <h5 class="card-title mb-3">Редактирование карточки</h5>
 
-    <form method="POST" action="/wishlist/update/<%= item.id %>" class="row g-3">
+    <form method="POST" action="/wishlist/update/<%= item.id %>" class="row g-3" enctype="multipart/form-data">
       <div class="col-md-8">
         <label class="form-label">Название *</label>
         <input
@@ -26,8 +26,22 @@
         >
       </div>
 
+      <div class="col-12">
+        <label class="form-label">Ссылка на товар</label>
+        <input
+          type="text"
+          name="store_url"
+          class="form-control"
+          value="<%- item.store_url || '' %>"
+          placeholder="https://..."
+        >
+        <div class="form-text">
+          Если у карточки нет своей картинки, система может попробовать снова подтянуть изображение со страницы товара.
+        </div>
+      </div>
+
       <div class="col-md-6">
-        <label class="form-label">Фото товара</label>
+        <label class="form-label">Ссылка на изображение</label>
         <input
           type="text"
           name="image_url"
@@ -38,13 +52,12 @@
       </div>
 
       <div class="col-md-6">
-        <label class="form-label">Ссылка на магазин</label>
+        <label class="form-label">Загрузить фото с компьютера</label>
         <input
-          type="text"
-          name="store_url"
+          type="file"
+          name="image_file"
           class="form-control"
-          value="<%- item.store_url || '' %>"
-          placeholder="https://..."
+          accept="image/*"
         >
       </div>
 
