@@ -41,7 +41,11 @@
       </div>
 
       <div class="col-md-6">
+<<<<<<< HEAD
         <label class="form-label">Ссылка на изображение</label>
+=======
+        <label class="form-label">Фото товара по ссылке</label>
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
         <input
           type="text"
           name="image_url"
@@ -53,12 +57,40 @@
 
       <div class="col-md-6">
         <label class="form-label">Загрузить фото с компьютера</label>
+<<<<<<< HEAD
+=======
         <input
           type="file"
           name="image_file"
           class="form-control"
           accept="image/*"
         >
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Ссылка на магазин</label>
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
+        <input
+          type="file"
+          name="image_file"
+          class="form-control"
+          accept="image/*"
+        >
+      </div>
+
+      <div class="col-md-6 d-flex align-items-end">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="remove_image"
+            value="1"
+            id="remove-image-<%= item.id %>"
+          >
+          <label class="form-check-label" for="remove-image-<%= item.id %>">
+            Удалить текущее изображение
+          </label>
+        </div>
       </div>
 
       <div class="col-md-6">

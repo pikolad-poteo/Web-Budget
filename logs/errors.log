@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [2026-04-08 17:01:43] ERROR
 Method: GET
 URL: /
@@ -147,35 +148,63 @@ Method: GET
 URL: /calendar
 IP: ::1
 User ID: 2
+=======
+[2026-04-09 12:40:37] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 1
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 Query: {}
 Params: {}
 Body: {}
 Message: Table 'web_budget.calendar_events' doesn't exist
 Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+<<<<<<< HEAD
     at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
     at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+=======
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:541:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 Extra: {
   "type": "calendar_index"
 }
 --------------------------------------------------
+<<<<<<< HEAD
 [2026-04-08 17:09:16] ERROR
 Method: GET
 URL: /calendar
 IP: ::1
 User ID: 2
+=======
+[2026-04-09 12:40:38] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 1
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 Query: {}
 Params: {}
 Body: {}
 Message: Table 'web_budget.calendar_events' doesn't exist
 Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+<<<<<<< HEAD
     at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
     at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+=======
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:541:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 Extra: {
   "type": "calendar_index"
 }
 --------------------------------------------------
+<<<<<<< HEAD
 [2026-04-08 17:09:17] ERROR
 Method: GET
 URL: /wishlist
@@ -266,5 +295,472 @@ Stack: Error
     at trimPrefix (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/router/index.js:342:13)
 Extra: {
   "type": "database_connection_check"
+=======
+[2026-04-09 12:40:38] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:541:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------
+[2026-04-09 12:40:38] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:541:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------
+[2026-04-09 12:40:40] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:541:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------
+[2026-04-09 12:48:29] ERROR
+Method: POST
+URL: /wishlist/update/1
+IP: ::1
+User ID: 1
+Query: {}
+Params: {
+  "id": "1"
+}
+Body: {
+  "title": "Семейная поездка на выходные",
+  "amount": "15000.00",
+  "image_url": "",
+  "store_url": "",
+  "category_id": "11",
+  "who": "Админ",
+  "planned_date": "",
+  "priority": "high",
+  "status": "bought",
+  "description": "Небольшое путешествие за город с бронированием жилья."
+}
+Message: Unknown column 'store_url' in 'field list'
+Stack: Error: Unknown column 'store_url' in 'field list'
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1413:16
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_update"
+}
+--------------------------------------------------
+[2026-04-09 12:49:34] ERROR
+Method: POST
+URL: /wishlist
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "title": "ыфв",
+  "amount": "",
+  "priority": "medium",
+  "store_url": "",
+  "image_url": "",
+  "category_id": "none",
+  "description": "",
+  "planned_date": "",
+  "who": ""
+}
+Message: Unknown column 'store_url' in 'field list'
+Stack: Error: Unknown column 'store_url' in 'field list'
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1322:16
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_create"
+}
+--------------------------------------------------
+[2026-04-09 12:49:39] ERROR
+Method: POST
+URL: /wishlist
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "title": "фывфыв",
+  "amount": "",
+  "priority": "medium",
+  "store_url": "",
+  "image_url": "",
+  "category_id": "none",
+  "description": "",
+  "planned_date": "",
+  "who": ""
+}
+Message: Unknown column 'store_url' in 'field list'
+Stack: Error: Unknown column 'store_url' in 'field list'
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1322:16
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_create"
+}
+--------------------------------------------------
+[2026-04-09 14:05:08] ERROR
+Method: POST
+URL: /wishlist/update/18
+IP: ::1
+User ID: 1
+Query: {}
+Params: {
+  "id": "18"
+}
+Body: {
+  "title": "GMT2240 mürasummutusmatt | Noor Tehnik",
+  "amount": "121.00",
+  "image_url": "https://noortehnik.ee/images/products/gmt2240-murasummutusmatt-1.webp",
+  "store_url": "https://noortehnik.ee/gmt2240-murasummutusmatt",
+  "category_id": "none",
+  "who": "",
+  "planned_date": "",
+  "priority": "medium",
+  "status": "bought",
+  "description": ""
+}
+Message: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+Stack: Error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1806:20
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_update"
+}
+--------------------------------------------------
+[2026-04-09 14:09:27] ERROR
+Method: POST
+URL: /wishlist/update/20
+IP: ::1
+User ID: 1
+Query: {}
+Params: {
+  "id": "20"
+}
+Body: {
+  "title": "Digi-TV tuuner antennidega | Noor Tehnik",
+  "amount": "500.00",
+  "image_url": "https://noortehnik.ee/images/products/digi-tv-tuuner-antennidega-1.webp",
+  "store_url": "https://noortehnik.ee/digi-tv-tuuner-antennidega",
+  "category_id": "none",
+  "who": "",
+  "planned_date": "",
+  "priority": "medium",
+  "status": "bought",
+  "description": ""
+}
+Message: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+Stack: Error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1814:20
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_update"
+}
+--------------------------------------------------
+[2026-04-09 14:10:40] ERROR
+Method: POST
+URL: /wishlist/update/18
+IP: ::1
+User ID: 1
+Query: {}
+Params: {
+  "id": "18"
+}
+Body: {
+  "title": "GMT2240 mürasummutusmatt | Noor Tehnik",
+  "amount": "121.00",
+  "image_url": "https://noortehnik.ee/images/products/gmt2240-murasummutusmatt-1.webp",
+  "store_url": "https://noortehnik.ee/gmt2240-murasummutusmatt",
+  "category_id": "none",
+  "who": "",
+  "planned_date": "",
+  "priority": "medium",
+  "status": "bought",
+  "description": ""
+}
+Message: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+Stack: Error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1814:20
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_update"
+}
+--------------------------------------------------
+[2026-04-09 14:10:48] ERROR
+Method: POST
+URL: /wishlist/update/18
+IP: ::1
+User ID: 1
+Query: {}
+Params: {
+  "id": "18"
+}
+Body: {
+  "title": "GMT2240 mürasummutusmatt | Noor Tehnik",
+  "amount": "121.00",
+  "image_url": "https://noortehnik.ee/images/products/gmt2240-murasummutusmatt-1.webp",
+  "store_url": "https://noortehnik.ee/gmt2240-murasummutusmatt",
+  "category_id": "none",
+  "who": "",
+  "planned_date": "",
+  "priority": "medium",
+  "status": "bought",
+  "description": ""
+}
+Message: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+Stack: Error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1814:20
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_update"
+}
+--------------------------------------------------
+[2026-04-09 14:16:15] ERROR
+Method: POST
+URL: /wishlist
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "title": "",
+  "amount": "",
+  "priority": "medium",
+  "store_url": "https://noortehnik.ee/gas-mad-a1-70-2-autovoimendi",
+  "image_url": "",
+  "category_id": "none",
+  "description": "",
+  "planned_date": "",
+  "who": ""
+}
+Message: Категория Wishlist не была определена при создании карточки.
+Stack: Error: Категория Wishlist не была определена при создании карточки.
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1583:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_create"
+}
+--------------------------------------------------
+[2026-04-09 14:40:28] ERROR
+Method: POST
+URL: /wishlist
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "title": "Gas MAD A1-70.2 autovõimendi | Noor Tehnik",
+  "amount": "0",
+  "priority": "medium",
+  "store_url": "https://noortehnik.ee/gas-mad-a1-70-2-autovoimendi",
+  "image_url": "https://noortehnik.ee/images/products/gas-gas-mad-a1-70-2-autovoimendi-1.webp",
+  "category_id": "none",
+  "description": "",
+  "planned_date": "",
+  "who": ""
+}
+Message: Категория Wishlist не была определена при создании карточки.
+Stack: Error: Категория Wishlist не была определена при создании карточки.
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1585:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_create"
+}
+--------------------------------------------------
+[2026-04-09 14:46:59] ERROR
+Method: POST
+URL: /wishlist
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "title": "",
+  "amount": "",
+  "priority": "medium",
+  "store_url": "https://noortehnik.ee/gas-mad-a1-70-2-autovoimendi",
+  "image_url": "",
+  "category_id": "28",
+  "description": "",
+  "planned_date": "",
+  "who": ""
+}
+Message: Unknown column 'store_url' in 'field list'
+Stack: Error: Unknown column 'store_url' in 'field list'
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:1650:16
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "wishlist_create"
+}
+--------------------------------------------------
+[2026-04-09 14:51:33] ERROR
+Method: POST
+URL: /categories/delete
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "id": "28"
+}
+Message: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+Stack: Error: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:2248:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "delete_category"
+}
+--------------------------------------------------
+[2026-04-09 14:51:41] ERROR
+Method: POST
+URL: /categories/delete
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "id": "28"
+}
+Message: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+Stack: Error: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:2248:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "delete_category"
+}
+--------------------------------------------------
+[2026-04-09 14:54:00] ERROR
+Method: POST
+URL: /categories/delete
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "id": "28"
+}
+Message: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+Stack: Error: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:2248:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "delete_category"
+}
+--------------------------------------------------
+[2026-04-09 14:54:04] ERROR
+Method: POST
+URL: /categories/delete
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "id": "28"
+}
+Message: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+Stack: Error: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:2248:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "delete_category"
+}
+--------------------------------------------------
+[2026-04-09 14:55:33] ERROR
+Method: POST
+URL: /categories/delete
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "id": "28"
+}
+Message: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+Stack: Error: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:2248:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "delete_category"
+}
+--------------------------------------------------
+[2026-04-09 15:08:59] ERROR
+Method: POST
+URL: /categories/delete
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "id": "29"
+}
+Message: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+Stack: Error: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:2248:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "delete_category"
+}
+--------------------------------------------------
+[2026-04-09 15:09:06] ERROR
+Method: POST
+URL: /categories/delete
+IP: ::1
+User ID: 1
+Query: {}
+Params: {}
+Body: {
+  "id": "29"
+}
+Message: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+Stack: Error: Cannot delete or update a parent row: a foreign key constraint fails (`web_budget`.`wishlist`, CONSTRAINT `fk_wishlist_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE)
+    at PromisePool.execute (D:\JKTV24\Vladislav Dudin\Web-Budget\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at D:\JKTV24\Vladislav Dudin\Web-Budget\server.js:2248:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Extra: {
+  "type": "delete_category"
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 }
 --------------------------------------------------

@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 <div class="card border-0 shadow-sm wishlist-quick-card">
   <div class="card-body">
     <h5 class="card-title mb-3">Быстро добавить</h5>
 
+=======
+<div class="wishlist-quick-card">
+  <div class="card-body p-0">
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
     <form method="POST" action="/wishlist" class="row g-3" enctype="multipart/form-data">
       <div class="col-12">
-        <label class="form-label">Название *</label>
+        <label class="form-label">Название</label>
         <input
           type="text"
           id="wishlist-title"
@@ -15,7 +20,11 @@
       </div>
 
       <div class="col-md-8">
+<<<<<<< HEAD
         <label class="form-label">Цена *</label>
+=======
+        <label class="form-label">Цена</label>
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
         <input
           type="number"
           step="0.01"
@@ -85,10 +94,15 @@
             <div class="col-12">
               <label class="form-label">Категория</label>
               <select name="category_id" class="form-select">
-                <option value="none">Без категории</option>
                 <% categories.forEach(c => { %>
-                  <option value="<%= c.id %>"><%= c.name %></option>
+                  <option
+                    value="<%= c.id %>"
+                    <%= defaultWishlistCategory && String(c.id) === String(defaultWishlistCategory.id) ? 'selected' : '' %>
+                  >
+                    <%= c.name %>
+                  </option>
                 <% }) %>
+                <option value="none">Без категории</option>
               </select>
             </div>
 
@@ -140,8 +154,14 @@
     const amountInput = document.getElementById('wishlist-amount');
     const imageUrlInput = document.getElementById('wishlist-image-url');
     const imageFileInput = document.getElementById('wishlist-image-file');
+<<<<<<< HEAD
 
     if (!storeUrlInput || !titleInput || !amountInput) return;
+=======
+    const form = storeUrlInput ? storeUrlInput.closest('form') : null;
+
+    if (!storeUrlInput || !titleInput || !amountInput || !form) return;
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 
     let titleTouched = false;
     let amountTouched = false;
@@ -160,6 +180,25 @@
       }
     });
 
+<<<<<<< HEAD
+=======
+    if (imageUrlInput) {
+      imageUrlInput.addEventListener('input', function () {
+        if (imageUrlInput.value.trim() !== '') {
+          lastFetchedUrl = storeUrlInput.value.trim();
+        }
+      });
+    }
+
+    if (imageFileInput) {
+      imageFileInput.addEventListener('change', function () {
+        if (imageFileInput.files && imageFileInput.files.length > 0) {
+          lastFetchedUrl = storeUrlInput.value.trim();
+        }
+      });
+    }
+
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
     async function fetchPreviewMeta() {
       const rawUrl = storeUrlInput.value.trim();
       if (!rawUrl || rawUrl === lastFetchedUrl) return;
@@ -208,5 +247,21 @@
       clearTimeout(requestTimer);
       requestTimer = setTimeout(fetchPreviewMeta, 700);
     });
+<<<<<<< HEAD
+=======
+
+    form.addEventListener('submit', function (event) {
+      const hasTitle = titleInput.value.trim() !== '';
+      const hasAmount = amountInput.value.trim() !== '';
+      const hasStoreUrl = storeUrlInput.value.trim() !== '';
+      const hasImageUrl = imageUrlInput && imageUrlInput.value.trim() !== '';
+      const hasImageFile = imageFileInput && imageFileInput.files && imageFileInput.files.length > 0;
+
+      if (!hasTitle && !hasAmount && !hasStoreUrl && !hasImageUrl && !hasImageFile) {
+        event.preventDefault();
+        alert('Введите хотя бы название, цену, ссылку на товар или изображение.');
+      }
+    });
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
   })();
 </script>

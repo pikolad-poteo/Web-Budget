@@ -13,10 +13,20 @@
 
 <div class="row g-4">
   <div class="col-lg-5">
+    <%
+      const imageSrc = item.image_local_path || item.image_url || null;
+    %>
+
     <div class="card border-0 shadow-sm overflow-hidden">
+<<<<<<< HEAD
       <% if (previewImage) { %>
         <img
           src="<%= previewImage %>"
+=======
+      <% if (imageSrc) { %>
+        <img
+          src="<%= imageSrc %>"
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
           alt="<%= item.title %>"
           class="wishlist-show-image"
         >
@@ -95,6 +105,14 @@
             <div class="text-muted small">Описание</div>
             <div><%= item.description || 'Описание не добавлено' %></div>
           </div>
+
+          <% if (item.linked_transaction_id) { %>
+            <div class="col-12">
+              <div class="alert alert-success mb-0">
+                Эта покупка уже перенесена в транзакции.
+              </div>
+            </div>
+          <% } %>
         </div>
       </div>
     </div>

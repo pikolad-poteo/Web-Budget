@@ -18,6 +18,12 @@ const cheerio = require('cheerio');
 
 const app = express();
 
+<<<<<<< HEAD
+=======
+const fs = require('fs');
+const multer = require('multer');
+
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 const wishlistUploadDir = path.join(__dirname, 'public', 'uploads', 'wishlist');
 
 if (!fs.existsSync(wishlistUploadDir)) {
@@ -49,6 +55,7 @@ const wishlistUpload = multer({
   },
 });
 
+<<<<<<< HEAD
 function normalizeUrl(value) {
   const url = String(value || '').trim();
   if (!url) return null;
@@ -298,6 +305,8 @@ function getWishlistImage(item) {
   return item.image_local_path || item.image_url || null;
 }
 
+=======
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 // ================== НАСТРОЙКИ ==================
 
 app.set('view engine', 'ejs');
@@ -1254,20 +1263,315 @@ app.post('/transactions', requireLogin, async (req, res) => {
   res.redirect('/transactions');
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ============ WISHLIST / PLANNED PURCHASES ============
 
 function normalizeUrl(value) {
   const url = String(value || '').trim();
   if (!url) return null;
 
-  if (
-    url.startsWith('http://') ||
-    url.startsWith('https://')
-  ) {
+  if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
 
   return `https://${url}`;
+}
+
+function decodeHtmlEntities(str) {
+  if (!str) return str;
+
+  return String(str)
+    .replace(/&quot;/g, '"')
+    .replace(/&#34;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&#38;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&#60;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#62;/g, '>')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#160;/g, ' ');
+}
+
+function stripHtmlTags(str) {
+  if (!str) return str;
+  return String(str).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function extractMetaContent(html, keys) {
+  if (!html || !Array.isArray(keys)) return null;
+
+  for (const key of keys) {
+    const patterns = [
+      new RegExp(`<meta[^>]+property=["']${key}["'][^>]+content=["']([^"']+)["'][^>]*>`, 'i'),
+      new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+property=["']${key}["'][^>]*>`, 'i'),
+      new RegExp(`<meta[^>]+name=["']${key}["'][^>]+content=["']([^"']+)["'][^>]*>`, 'i'),
+      new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+name=["']${key}["'][^>]*>`, 'i'),
+      new RegExp(`<meta[^>]+itemprop=["']${key}["'][^>]+content=["']([^"']+)["'][^>]*>`, 'i'),
+      new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+itemprop=["']${key}["'][^>]*>`, 'i'),
+    ];
+
+    for (const pattern of patterns) {
+      const match = html.match(pattern);
+      if (match && match[1]) {
+        return decodeHtmlEntities(match[1].trim());
+      }
+    }
+  }
+
+  return null;
+}
+
+function extractTitleFromHtml(html) {
+  if (!html) return null;
+
+  const metaTitle = extractMetaContent(html, [
+    'og:title',
+    'twitter:title',
+    'title',
+  ]);
+
+  if (metaTitle) return metaTitle;
+
+  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  if (titleMatch && titleMatch[1]) {
+    return decodeHtmlEntities(stripHtmlTags(titleMatch[1]));
+  }
+
+  const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  if (h1Match && h1Match[1]) {
+    return decodeHtmlEntities(stripHtmlTags(h1Match[1]));
+  }
+
+  return null;
+}
+
+function extractImageFromHtml(html, baseUrl) {
+  if (!html) return null;
+
+  let image = extractMetaContent(html, [
+    'og:image',
+    'twitter:image',
+    'image',
+  ]);
+
+  if (!image) {
+    const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i);
+    if (imgMatch && imgMatch[1]) {
+      image = imgMatch[1].trim();
+    }
+  }
+
+  if (!image) return null;
+
+  try {
+    return new URL(image, baseUrl).toString();
+  } catch (err) {
+    return image;
+  }
+}
+
+function extractPriceFromHtml(html) {
+  if (!html) return null;
+
+  const metaPrice = extractMetaContent(html, [
+    'product:price:amount',
+    'og:price:amount',
+    'price',
+  ]);
+
+  if (metaPrice) {
+    const normalizedMetaPrice = String(metaPrice).replace(',', '.').match(/\d+(?:\.\d{1,2})?/);
+    if (normalizedMetaPrice) {
+      return normalizedMetaPrice[0];
+    }
+  }
+
+  const text = stripHtmlTags(html);
+
+  const pricePatterns = [
+    /(\d{1,3}(?:[\s.,]\d{3})*(?:[.,]\d{1,2})?)\s?(?:€|EUR|₽|руб|грн|\$)/i,
+    /(?:€|EUR|₽|руб|грн|\$)\s?(\d{1,3}(?:[\s.,]\d{3})*(?:[.,]\d{1,2})?)/i,
+  ];
+
+  for (const pattern of pricePatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      const raw = match[1].replace(/\s+/g, '').replace(',', '.');
+      const numeric = raw.match(/\d+(?:\.\d{1,2})?/);
+      if (numeric) {
+        return numeric[0];
+      }
+    }
+  }
+
+  return null;
+}
+
+async function tryExtractProductDataFromStoreUrl(storeUrl) {
+  try {
+    const response = await fetch(storeUrl, {
+      method: 'GET',
+      redirect: 'follow',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept':
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'ru,en;q=0.9',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        title: null,
+        amount: null,
+        image: null,
+      };
+    }
+
+    const html = await response.text();
+
+    const title = extractTitleFromHtml(html);
+    const amount = extractPriceFromHtml(html);
+    const image = extractImageFromHtml(html, response.url || storeUrl);
+
+    return {
+      title: title || null,
+      amount: amount || null,
+      image: image || null,
+    };
+  } catch (err) {
+    return {
+      title: null,
+      amount: null,
+      image: null,
+    };
+  }
+}
+
+async function resolveDefaultWishlistCategoryId(familyId) {
+  const [rows] = await pool.execute(
+    `
+    SELECT id, family_id
+    FROM categories
+    WHERE type = 'expense'
+      AND LOWER(TRIM(name)) = LOWER(TRIM('Wishlist'))
+      AND (family_id = ? OR family_id IS NULL)
+    ORDER BY
+      CASE
+        WHEN family_id = ? THEN 0
+        WHEN family_id IS NULL THEN 1
+        ELSE 2
+      END,
+      id ASC
+    LIMIT 1
+    `,
+    [familyId, familyId]
+  );
+
+  if (rows.length > 0 && rows[0] && rows[0].id) {
+    return Number(rows[0].id);
+  }
+
+  const [insertResult] = await pool.execute(
+    `
+    INSERT INTO categories (family_id, name, type, color, icon)
+    VALUES (?, 'Wishlist', 'expense', '#8e44ad', 'bi-bag-heart')
+    `,
+    [familyId]
+  );
+
+  if (!insertResult || !insertResult.insertId) {
+    throw new Error('Не удалось создать категорию Wishlist.');
+  }
+
+  return Number(insertResult.insertId);
+}
+
+async function createTransactionFromWishlistItem({
+  wishlistItem,
+  familyId,
+  accountId,
+  userId,
+}) {
+  if (!wishlistItem) return null;
+
+  if (wishlistItem.linked_transaction_id) {
+    return wishlistItem.linked_transaction_id;
+  }
+
+  let categoryId = wishlistItem.category_id;
+
+  if (!categoryId) {
+    categoryId = await resolveDefaultWishlistCategoryId(familyId);
+  }
+
+  if (!categoryId) {
+    throw new Error('Не удалось определить категорию для wishlist-транзакции.');
+  }
+
+  const txDate = wishlistItem.planned_date
+    ? String(wishlistItem.planned_date).slice(0, 10)
+    : new Date().toISOString().slice(0, 10);
+
+  const descriptionParts = [`Покупка из Wishlist: ${wishlistItem.title}`];
+
+  if (wishlistItem.description) {
+    descriptionParts.push(wishlistItem.description);
+  }
+
+  if (wishlistItem.store_url) {
+    descriptionParts.push(`Магазин: ${wishlistItem.store_url}`);
+  }
+
+  const txDescription = descriptionParts.join(' | ');
+  const txAmount = -Math.abs(Number(wishlistItem.amount || 0));
+
+  const [txResult] = await pool.execute(
+    `
+    INSERT INTO transactions
+      (family_id, account_id, user_id, category_id, amount, date, description, who)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `,
+    [
+      Number(familyId),
+      Number(accountId),
+      Number(userId),
+      Number(categoryId),
+      txAmount,
+      txDate,
+      txDescription || null,
+      wishlistItem.who || null,
+    ]
+  );
+
+  return txResult.insertId || null;
 }
 
 app.get('/wishlist', requireLogin, async (req, res) => {
@@ -1296,6 +1600,8 @@ app.get('/wishlist', requireLogin, async (req, res) => {
     category_id = String(category_id || 'all').trim();
     q = String(q || '').trim();
 
+    const defaultWishlistCategoryId = await resolveDefaultWishlistCategoryId(familyId);
+
     const [categories] = await pool.execute(
       `
       SELECT *
@@ -1306,6 +1612,9 @@ app.get('/wishlist', requireLogin, async (req, res) => {
       `,
       [familyId]
     );
+
+    const defaultWishlistCategory =
+      categories.find((c) => String(c.id) === String(defaultWishlistCategoryId)) || null;
 
     let query = `
       SELECT
@@ -1379,14 +1688,16 @@ app.get('/wishlist', requireLogin, async (req, res) => {
       boughtTotal: Number(summaryRows[0].bought_total || 0),
       postponedTotal: Number(summaryRows[0].postponed_total || 0),
       balance,
-      freeAfterPlanned:
-        balance - Number(summaryRows[0].planned_total || 0),
+      freeAfterPlanned: balance - Number(summaryRows[0].planned_total || 0),
     };
+    
+    await resolveDefaultWishlistCategoryId(familyId);
 
     res.render('wishlist/index', {
       user,
       members: memberRows,
       categories,
+      defaultWishlistCategory,
       wishlist,
       summary,
       filters: {
@@ -1402,6 +1713,28 @@ app.get('/wishlist', requireLogin, async (req, res) => {
     return res.status(500).render('errors/500', {
       user: req.user || null,
     });
+  }
+});
+
+app.get('/wishlist/preview-meta', requireLogin, async (req, res) => {
+  try {
+    const url = normalizeUrl(req.query.url);
+
+    if (!url) {
+      return res.json({ ok: false });
+    }
+
+    const extracted = await tryExtractProductDataFromStoreUrl(url);
+
+    return res.json({
+      ok: true,
+      title: extracted.title || null,
+      amount: extracted.amount || null,
+      image: extracted.image || null,
+    });
+  } catch (err) {
+    logError(err, req, { type: 'wishlist_preview_meta' });
+    return res.json({ ok: false });
   }
 });
 
@@ -1475,6 +1808,331 @@ app.get('/wishlist/:id', requireLogin, async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
+=======
+app.post('/wishlist', requireLogin, wishlistUpload.single('image_file'), async (req, res) => {
+  const user = req.user;
+  const userId = user.id;
+
+  try {
+    const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
+
+    let {
+      title,
+      amount,
+      image_url,
+      store_url,
+      category_id,
+      description,
+      planned_date,
+      who,
+      priority,
+    } = req.body;
+
+    title = String(title || '').trim();
+    description = String(description || '').trim() || null;
+    planned_date = String(planned_date || '').trim() || null;
+    who = String(who || '').trim() || null;
+    store_url = normalizeUrl(store_url);
+    image_url = normalizeUrl(image_url);
+
+    if (category_id === '' || category_id === 'none') {
+  category_id = null;
+    }
+
+    if (!category_id) {
+      category_id = await resolveDefaultWishlistCategoryId(familyId);
+    }
+
+    if (!category_id) {
+      throw new Error('Не удалось создать или определить категорию Wishlist.');
+    }
+
+    priority = ['low', 'medium', 'high'].includes(priority) ? priority : 'medium';
+
+    const hasManualImage = !!req.file || !!image_url;
+    const parsedAmount = parseFloat(amount);
+    const hasManualAmount = !Number.isNaN(parsedAmount) && parsedAmount > 0;
+    const hasManualTitle = !!title;
+    const hasStoreUrl = !!store_url;
+
+    const hasAnyUserInput =
+      hasManualTitle ||
+      hasManualAmount ||
+      hasStoreUrl ||
+      hasManualImage ||
+      !!description ||
+      !!planned_date ||
+      !!who ||
+      !!category_id;
+
+    if (!hasAnyUserInput) {
+      return res.redirect('/wishlist');
+    }
+
+    let extracted = {
+      title: null,
+      amount: null,
+      image: null,
+    };
+
+    if (hasStoreUrl && !req.file) {
+      extracted = await tryExtractProductDataFromStoreUrl(store_url);
+    }
+
+    if (!hasManualTitle && extracted.title) {
+      title = extracted.title;
+    }
+
+    let finalAmount = hasManualAmount ? parsedAmount : null;
+    if ((!finalAmount || Number.isNaN(finalAmount) || finalAmount <= 0) && extracted.amount) {
+      finalAmount = parseFloat(extracted.amount);
+    }
+
+    let finalImageUrl = image_url || null;
+    let finalImageLocalPath = null;
+
+    if (req.file) {
+      finalImageLocalPath = `/uploads/wishlist/${req.file.filename}`;
+      finalImageUrl = null;
+    } else if (!finalImageUrl && extracted.image) {
+      finalImageUrl = extracted.image;
+    }
+
+    if (!title) {
+      title = 'Новая покупка';
+    }
+
+    if (!finalAmount || Number.isNaN(finalAmount) || finalAmount <= 0) {
+      finalAmount = 0.01;
+    }
+
+    await pool.execute(
+      `
+      INSERT INTO wishlist
+        (
+          family_id,
+          account_id,
+          user_id,
+          category_id,
+          title,
+          description,
+          amount,
+          planned_date,
+          priority,
+          status,
+          who,
+          store_url,
+          image_url,
+          image_local_path
+        )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'planned', ?, ?, ?, ?)
+      `,
+      [
+        familyId,
+        accountId,
+        userId,
+        category_id,
+        title,
+        description,
+        finalAmount,
+        planned_date,
+        priority,
+        who,
+        store_url,
+        finalImageUrl,
+        finalImageLocalPath,
+      ]
+    );
+
+    res.redirect('/wishlist');
+  } catch (err) {
+    logError(err, req, { type: 'wishlist_create' });
+
+    return res.status(500).render('errors/500', {
+      user: req.user || null,
+    });
+  }
+});
+
+app.post('/wishlist/update/:id', requireLogin, wishlistUpload.single('image_file'), async (req, res) => {
+  const user = req.user;
+  const userId = user.id;
+
+  try {
+    const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
+    const { id } = req.params;
+
+    let {
+      title,
+      amount,
+      image_url,
+      store_url,
+      category_id,
+      description,
+      planned_date,
+      who,
+      priority,
+      status,
+      remove_image,
+    } = req.body;
+
+    title = String(title || '').trim();
+    description = String(description || '').trim() || null;
+    planned_date = String(planned_date || '').trim() || null;
+    who = String(who || '').trim() || null;
+    image_url = normalizeUrl(image_url);
+    store_url = normalizeUrl(store_url);
+
+    if (category_id === '' || category_id === 'none') {
+      category_id = null;
+    }
+
+    priority = ['low', 'medium', 'high'].includes(priority) ? priority : 'medium';
+    status = ['planned', 'postponed', 'bought', 'cancelled'].includes(status)
+      ? status
+      : 'planned';
+
+    const parsedAmount = parseFloat(amount);
+
+    if (!title || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+      return res.redirect(`/wishlist/${id}`);
+    }
+
+    const [existingRows] = await pool.execute(
+      `
+      SELECT *
+      FROM wishlist
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      LIMIT 1
+      `,
+      [id, familyId, accountId]
+    );
+
+    if (existingRows.length === 0) {
+      return res.redirect('/wishlist');
+    }
+
+    const existingItem = existingRows[0];
+
+    let finalImageUrl = existingItem.image_url || null;
+    let finalImageLocalPath = existingItem.image_local_path || null;
+
+    if (String(remove_image || '0') === '1') {
+      finalImageUrl = null;
+      finalImageLocalPath = null;
+    }
+
+    if (image_url) {
+      finalImageUrl = image_url;
+      finalImageLocalPath = null;
+    }
+
+    if (req.file) {
+      finalImageLocalPath = `/uploads/wishlist/${req.file.filename}`;
+      finalImageUrl = null;
+    }
+
+    if (!category_id) {
+  category_id = await resolveDefaultWishlistCategoryId(familyId);
+}
+
+  const safeCategoryId = Number(category_id);
+  const safeTitle = title || 'Новая покупка';
+  const safeDescription = description || null;
+  const safeAmount = Number(parsedAmount);
+  const safePlannedDate = planned_date || null;
+  const safePriority = priority || 'medium';
+  const safeStatus = status || 'planned';
+  const safeWho = who || null;
+  const safeStoreUrl = store_url || null;
+  const safeImageUrl = finalImageUrl || null;
+  const safeImageLocalPath = finalImageLocalPath || null;
+
+    await pool.execute(
+      `
+      UPDATE wishlist
+      SET
+        category_id = ?,
+        title = ?,
+        description = ?,
+        amount = ?,
+        planned_date = ?,
+        priority = ?,
+        status = ?,
+        who = ?,
+        store_url = ?,
+        image_url = ?,
+        image_local_path = ?
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      `,
+      [
+        safeCategoryId,
+        safeTitle,
+        safeDescription,
+        safeAmount,
+        safePlannedDate,
+        safePriority,
+        safeStatus,
+        safeWho,
+        safeStoreUrl,
+        safeImageUrl,
+        safeImageLocalPath,
+        Number(id),
+        Number(familyId),
+        Number(accountId),
+      ]
+    );
+
+    if (status === 'bought') {
+      const [updatedRows] = await pool.execute(
+        `
+        SELECT *
+        FROM wishlist
+        WHERE id = ?
+          AND family_id = ?
+          AND account_id = ?
+        LIMIT 1
+        `,
+        [id, familyId, accountId]
+      );
+
+      if (updatedRows.length > 0 && !updatedRows[0].linked_transaction_id) {
+        const linkedTransactionId = await createTransactionFromWishlistItem({
+          wishlistItem: updatedRows[0],
+          familyId,
+          accountId,
+          userId,
+        });
+
+        await pool.execute(
+          `
+          UPDATE wishlist
+          SET linked_transaction_id = ?
+          WHERE id = ?
+            AND family_id = ?
+            AND account_id = ?
+          `,
+          [linkedTransactionId, id, familyId, accountId]
+        );
+      }
+    }
+
+    res.redirect(`/wishlist/${id}`);
+  } catch (err) {
+    logError(err, req, { type: 'wishlist_update' });
+
+    return res.status(500).render('errors/500', {
+      user: req.user || null,
+    });
+  }
+});
+
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 app.post('/wishlist/status', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
@@ -1487,15 +2145,45 @@ app.post('/wishlist/status', requireLogin, async (req, res) => {
       ? status
       : 'planned';
 
+    const [rows] = await pool.execute(
+      `
+      SELECT *
+      FROM wishlist
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      LIMIT 1
+      `,
+      [id, familyId, accountId]
+    );
+
+    if (rows.length === 0) {
+      return res.redirect('/wishlist');
+    }
+
+    const item = rows[0];
+    let linkedTransactionId = item.linked_transaction_id || null;
+
+    if (status === 'bought' && !linkedTransactionId) {
+      linkedTransactionId = await createTransactionFromWishlistItem({
+        wishlistItem: item,
+        familyId,
+        accountId,
+        userId,
+      });
+    }
+
     await pool.execute(
       `
       UPDATE wishlist
-      SET status = ?
+      SET
+        status = ?,
+        linked_transaction_id = ?
       WHERE id = ?
         AND family_id = ?
         AND account_id = ?
       `,
-      [status, id, familyId, accountId]
+      [status, linkedTransactionId, id, familyId, accountId]
     );
 
     res.redirect(`/wishlist/${id}`);
@@ -1536,6 +2224,7 @@ app.post('/wishlist/delete', requireLogin, async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 app.post('/wishlist/update/:id', requireLogin, wishlistUpload.single('image_file'), async (req, res) => {
   const user = req.user;
   const userId = user.id;
@@ -1832,6 +2521,33 @@ app.get('/wishlist/preview-meta', requireLogin, async (req, res) => {
     });
   }
 });
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> c6755bd (WishList synchronization with the dashboard)
 
 // ============ КАТЕГОРИИ ============
 
