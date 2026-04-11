@@ -1,0 +1,51 @@
+[2026-04-11 15:37:13] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------
+[2026-04-11 15:37:14] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------
+[2026-04-11 15:37:18] ERROR
+Method: GET
+URL: /calendar
+IP: ::1
+User ID: 2
+Query: {}
+Params: {}
+Body: {}
+Message: Table 'web_budget.calendar_events' doesn't exist
+Stack: Error: Table 'web_budget.calendar_events' doesn't exist
+    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Extra: {
+  "type": "calendar_index"
+}
+--------------------------------------------------

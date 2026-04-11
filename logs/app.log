@@ -1,223 +1,509 @@
-[2026-04-11 15:02:09] INFO
+[2026-04-11 15:36:44] INFO
 Server started on http://localhost:3000
 --------------------------------------------------
-[2026-04-11 15:02:11] INFO
+[2026-04-11 15:36:47] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/",
   "statusCode": 302,
-  "durationMs": 31,
+  "durationMs": 17,
   "userId": null,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:11] INFO
+[2026-04-11 15:36:47] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/login",
   "statusCode": 200,
-  "durationMs": 5,
+  "durationMs": 6,
   "userId": null,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:20] INFO
+[2026-04-11 15:36:52] INFO
 HTTP request
 {
   "method": "POST",
   "url": "/login",
   "statusCode": 302,
-  "durationMs": 251,
-  "userId": 1,
+  "durationMs": 239,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:20] INFO
+[2026-04-11 15:36:52] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/",
   "statusCode": 200,
-  "durationMs": 25,
-  "userId": 1,
+  "durationMs": 9,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:22] INFO
-HTTP request
-{
-  "method": "GET",
-  "url": "/wishlist",
-  "statusCode": 304,
-  "durationMs": 25,
-  "userId": 1,
-  "ip": "::1"
-}
---------------------------------------------------
-[2026-04-11 15:02:23] INFO
-HTTP request
-{
-  "method": "GET",
-  "url": "/calendar",
-  "statusCode": 200,
-  "durationMs": 19,
-  "userId": 1,
-  "ip": "::1"
-}
---------------------------------------------------
-[2026-04-11 15:02:24] INFO
-HTTP request
-{
-  "method": "GET",
-  "url": "/wishlist",
-  "statusCode": 304,
-  "durationMs": 16,
-  "userId": 1,
-  "ip": "::1"
-}
---------------------------------------------------
-[2026-04-11 15:02:27] INFO
-HTTP request
-{
-  "method": "GET",
-  "url": "/categories",
-  "statusCode": 304,
-  "durationMs": 33,
-  "userId": 1,
-  "ip": "::1"
-}
---------------------------------------------------
-[2026-04-11 15:02:28] INFO
+[2026-04-11 15:36:54] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/transactions",
-  "statusCode": 200,
+  "statusCode": 304,
   "durationMs": 15,
-  "userId": 1,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:28] INFO
+[2026-04-11 15:36:55] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 18,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:37:10] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/",
   "statusCode": 304,
-  "durationMs": 7,
-  "userId": 1,
+  "durationMs": 6,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:29] INFO
-HTTP request
-{
-  "method": "GET",
-  "url": "/categories",
-  "statusCode": 304,
-  "durationMs": 28,
-  "userId": 1,
-  "ip": "::1"
-}
---------------------------------------------------
-[2026-04-11 15:02:30] INFO
-HTTP request
-{
-  "method": "GET",
-  "url": "/calendar",
-  "statusCode": 304,
-  "durationMs": 10,
-  "userId": 1,
-  "ip": "::1"
-}
---------------------------------------------------
-[2026-04-11 15:02:36] INFO
+[2026-04-11 15:37:11] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/transactions",
   "statusCode": 304,
   "durationMs": 11,
-  "userId": 1,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:36] INFO
+[2026-04-11 15:37:12] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 200,
+  "durationMs": 27,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:37:13] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 500,
+  "durationMs": 11,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:37:14] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 500,
+  "durationMs": 11,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:37:18] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 500,
+  "durationMs": 8,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:39:33] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 200,
+  "durationMs": 15,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:39:35] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 13,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:39:36] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 200,
+  "durationMs": 28,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:39:37] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 200,
+  "durationMs": 10,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:39:38] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 11,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:39:38] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:39:39] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:39:40] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/family",
+  "statusCode": 200,
+  "durationMs": 10,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:40:38] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/family",
+  "statusCode": 200,
+  "durationMs": 8,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:40:40] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:40:40] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:40:41] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/categories",
   "statusCode": 304,
-  "durationMs": 25,
-  "userId": 1,
+  "durationMs": 24,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:40] INFO
-HTTP request
-{
-  "method": "GET",
-  "url": "/transactions",
-  "statusCode": 304,
-  "durationMs": 10,
-  "userId": 1,
-  "ip": "::1"
-}
---------------------------------------------------
-[2026-04-11 15:02:40] INFO
-HTTP request
-{
-  "method": "GET",
-  "url": "/",
-  "statusCode": 304,
-  "durationMs": 10,
-  "userId": 1,
-  "ip": "::1"
-}
---------------------------------------------------
-[2026-04-11 15:02:43] INFO
+[2026-04-11 15:40:42] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/transactions",
   "statusCode": 304,
   "durationMs": 9,
-  "userId": 1,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:44] INFO
+[2026-04-11 15:40:42] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:40:43] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/",
   "statusCode": 304,
-  "durationMs": 8,
-  "userId": 1,
+  "durationMs": 10,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:46] INFO
+[2026-04-11 15:40:44] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/family",
+  "statusCode": 304,
+  "durationMs": 7,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:40:44] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 12,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:48:51] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 200,
+  "durationMs": 15,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:00] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist/3",
+  "statusCode": 200,
+  "durationMs": 12,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:04] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 12,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:06] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:10] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 23,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:12] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/calendar",
   "statusCode": 304,
-  "durationMs": 10,
-  "userId": 1,
+  "durationMs": 11,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
-[2026-04-11 15:02:47] INFO
+[2026-04-11 15:49:16] INFO
 HTTP request
 {
   "method": "GET",
   "url": "/wishlist",
   "statusCode": 304,
   "durationMs": 11,
-  "userId": 1,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:32] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/family",
+  "statusCode": 304,
+  "durationMs": 7,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:32] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 13,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:34] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:35] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 23,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:35] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 10,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:36] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:37] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/transactions",
+  "statusCode": 304,
+  "durationMs": 8,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:40] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/categories",
+  "statusCode": 304,
+  "durationMs": 28,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:43] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/calendar",
+  "statusCode": 304,
+  "durationMs": 16,
+  "userId": 2,
+  "ip": "::1"
+}
+--------------------------------------------------
+[2026-04-11 15:49:44] INFO
+HTTP request
+{
+  "method": "GET",
+  "url": "/wishlist",
+  "statusCode": 304,
+  "durationMs": 11,
+  "userId": 2,
   "ip": "::1"
 }
 --------------------------------------------------
