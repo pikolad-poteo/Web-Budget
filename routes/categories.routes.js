@@ -6,8 +6,6 @@ const { requireLogin } = require('../src/middleware');
 const { ensureFamilyAndAccountForUser } = require('../src/auth');
 const { logError } = require('../src/logger');
 
-// Сюда переносим все /categories...
-
 router.get('/categories', requireLogin, async (req, res) => {
   const user = req.user;
   const userId = user.id;
@@ -183,6 +181,15 @@ router.post('/categories/update', requireLogin, async (req, res) => {
 
     await pool.execute(
       `
+      UPDATE wishlist
+      SET category_id = ?
+      WHERE family_id = ? AND category_id = ?
+      `,
+      [newId, familyId, id]
+    );
+
+    await pool.execute(
+      `
       INSERT IGNORE INTO hidden_categories (family_id, category_id)
       VALUES (?, ?)
       `,
@@ -214,7 +221,12 @@ router.post('/categories/delete', requireLogin, async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      'SELECT id, family_id FROM categories WHERE id = ? LIMIT 1',
+      `
+      SELECT id, family_id, name, type
+      FROM categories
+      WHERE id = ?
+      LIMIT 1
+      `,
       [id]
     );
 
@@ -223,11 +235,53 @@ router.post('/categories/delete', requireLogin, async (req, res) => {
     }
 
     const category = rows[0];
+    const isWishlist =
+      category.type === 'expense' &&
+      String(category.name || '').trim().toLowerCase() === 'wishlist';
+
+    if (isWishlist) {
+      const [wishlistRows] = await pool.execute(
+        `
+        SELECT linked_transaction_id
+        FROM wishlist
+        WHERE family_id = ?
+          AND category_id = ?
+        `,
+        [familyId, id]
+      );
+
+      const linkedTransactionIds = wishlistRows
+        .map((row) => row.linked_transaction_id)
+        .filter(Boolean);
+
+      if (linkedTransactionIds.length > 0) {
+        const placeholders = linkedTransactionIds.map(() => '?').join(', ');
+
+        await pool.execute(
+          `
+          DELETE FROM transactions
+          WHERE family_id = ?
+            AND id IN (${placeholders})
+          `,
+          [familyId, ...linkedTransactionIds]
+        );
+      }
+
+      await pool.execute(
+        `
+        DELETE FROM wishlist
+        WHERE family_id = ?
+          AND category_id = ?
+        `,
+        [familyId, id]
+      );
+    }
 
     await pool.execute(
       `
       DELETE FROM transactions
-      WHERE family_id = ? AND category_id = ?
+      WHERE family_id = ?
+        AND category_id = ?
       `,
       [familyId, id]
     );

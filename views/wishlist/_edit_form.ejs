@@ -2,7 +2,7 @@
   <div class="card-body">
     <h5 class="card-title mb-3">Редактирование карточки</h5>
 
-    <form method="POST" action="/wishlist/update/<%= item.id %>" class="row g-3">
+    <form method="POST" action="/wishlist/update/<%= item.id %>" class="row g-3" id="wishlist-edit-form" enctype="multipart/form-data">
       <div class="col-md-8">
         <label class="form-label">Название *</label>
         <input
@@ -19,6 +19,7 @@
         <input
           type="number"
           step="0.01"
+          min="0.01"
           name="amount"
           class="form-control"
           value="<%= Number(item.amount).toFixed(2) %>"
@@ -38,6 +39,19 @@
       </div>
 
       <div class="col-md-6">
+        <label class="form-label">Загрузить фото с устройства</label>
+        <input
+          type="file"
+          name="image_file"
+          class="form-control"
+          accept="image/*"
+        >
+        <div class="form-text">
+          Если выбрать файл, он заменит текущую ссылку на изображение.
+        </div>
+      </div>
+
+      <div class="col-md-6">
         <label class="form-label">Ссылка на магазин</label>
         <input
           type="text"
@@ -46,6 +60,23 @@
           value="<%- item.store_url || '' %>"
           placeholder="https://..."
         >
+      </div>
+
+      <div class="col-12">
+        <div id="wishlist-edit-image-preview-wrap" class="<%= item.image_url ? '' : 'd-none' %>">
+          <label class="form-label">Предварительная картинка</label>
+          <div class="border rounded-3 p-2 text-center bg-light">
+            <img
+              id="wishlist-edit-image-preview"
+              src="<%- item.image_url || '' %>"
+              alt="Предпросмотр"
+              style="max-width: 100%; max-height: 220px; object-fit: contain;"
+            >
+          </div>
+          <div class="form-text">
+            Картинка подставилась автоматически. Вы можете вручную заменить ссылку в поле «Фото товара».
+          </div>
+        </div>
       </div>
 
       <div class="col-md-6">
@@ -61,6 +92,9 @@
             </option>
           <% }) %>
         </select>
+        <div class="form-text">
+          Если сохранить без категории, автоматически будет использована категория WishList.
+        </div>
       </div>
 
       <div class="col-md-6">
@@ -160,3 +194,89 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('wishlist-edit-form');
+    if (!form) return;
+
+    const storeUrlInput = form.querySelector('input[name="store_url"]');
+    const imageUrlInput = form.querySelector('input[name="image_url"]');
+    const imageFileInput = form.querySelector('input[name="image_file"]');
+    const previewWrap = document.getElementById('wishlist-edit-image-preview-wrap');
+    const previewImg = document.getElementById('wishlist-edit-image-preview');
+
+    if (!storeUrlInput || !imageUrlInput || !imageFileInput || !previewWrap || !previewImg) {
+      return;
+    }
+
+    let timer = null;
+
+    function showPreview(url) {
+      if (!url) {
+        previewImg.src = '';
+        previewWrap.classList.add('d-none');
+        return;
+      }
+
+      previewImg.src = url;
+      previewWrap.classList.remove('d-none');
+    }
+
+    imageUrlInput.addEventListener('input', function () {
+      const manualUrl = imageUrlInput.value.trim();
+
+      if (manualUrl) {
+        imageFileInput.value = '';
+        showPreview(manualUrl);
+      } else if (!imageFileInput.files.length) {
+        showPreview('');
+      }
+    });
+
+    imageFileInput.addEventListener('change', function () {
+      const file = imageFileInput.files && imageFileInput.files[0];
+
+      if (!file) {
+        if (imageUrlInput.value.trim()) {
+          showPreview(imageUrlInput.value.trim());
+        } else {
+          showPreview('');
+        }
+        return;
+      }
+
+      imageUrlInput.value = '';
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        showPreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    storeUrlInput.addEventListener('blur', function () {
+      const storeUrl = storeUrlInput.value.trim();
+      if (!storeUrl || imageFileInput.files.length || imageUrlInput.value.trim()) return;
+
+      clearTimeout(timer);
+
+      timer = setTimeout(async () => {
+        try {
+          const response = await fetch(`/wishlist/preview-image?store_url=${encodeURIComponent(storeUrl)}`);
+          const data = await response.json();
+
+          if (data && data.success && data.image_url) {
+            imageUrlInput.value = data.image_url;
+            showPreview(data.image_url);
+          }
+        } catch (err) {
+        }
+      }, 250);
+    });
+
+    if (imageUrlInput.value.trim()) {
+      showPreview(imageUrlInput.value.trim());
+    }
+  });
+</script>

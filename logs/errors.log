@@ -1,51 +1,56 @@
-[2026-04-11 15:37:13] ERROR
+[2026-04-14 18:39:07] ERROR
 Method: GET
-URL: /calendar
+URL: /
 IP: ::1
-User ID: 2
+User ID: 1
 Query: {}
 Params: {}
 Body: {}
-Message: Table 'web_budget.calendar_events' doesn't exist
-Stack: Error: Table 'web_budget.calendar_events' doesn't exist
-    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
-    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
-    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Message: /Users/vtensionx/Documents/Programmer Files/Web-Budget/views/dashboard/index.ejs:20
+    18| <div class="row section-card">
+    19|   <div class="col-12">
+ >> 20|     <%- include('_categories_expenses', { categoriesSummary, totalExpensesAbs }) %>
+    21|   </div>
+    22| </div>
+    23| 
+
+/Users/vtensionx/Documents/Programmer Files/Web-Budget/views/dashboard/_categories_expenses.ejs:6
+    4|       <h5 class="card-title mb-0">Расходы по категориям</h5>
+    5| 
+ >> 6|       <% if (plannedCategories && plannedCategories.length > 0) { %>
+    7|         <button
+    8|           class="btn btn-sm btn-outline-secondary"
+    9|           type="button"
+
+plannedCategories is not defined
+Stack: ReferenceError: /Users/vtensionx/Documents/Programmer Files/Web-Budget/views/dashboard/index.ejs:20
+    18| <div class="row section-card">
+    19|   <div class="col-12">
+ >> 20|     <%- include('_categories_expenses', { categoriesSummary, totalExpensesAbs }) %>
+    21|   </div>
+    22| </div>
+    23| 
+
+/Users/vtensionx/Documents/Programmer Files/Web-Budget/views/dashboard/_categories_expenses.ejs:6
+    4|       <h5 class="card-title mb-0">Расходы по категориям</h5>
+    5| 
+ >> 6|       <% if (plannedCategories && plannedCategories.length > 0) { %>
+    7|         <button
+    8|           class="btn btn-sm btn-outline-secondary"
+    9|           type="button"
+
+plannedCategories is not defined
+    at eval (eval at compile (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/ejs/lib/ejs.js:673:12), <anonymous>:12:8)
+    at _categories_expenses (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/ejs/lib/ejs.js:703:17)
+    at include (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/ejs/lib/ejs.js:701:39)
+    at eval (eval at compile (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/ejs/lib/ejs.js:673:12), <anonymous>:19:17)
+    at index (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/ejs/lib/ejs.js:703:17)
+    at tryHandleCache (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/ejs/lib/ejs.js:274:36)
+    at exports.renderFile [as engine] (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/ejs/lib/ejs.js:491:10)
+    at View.render (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/express/lib/view.js:139:8)
+    at tryRender (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/express/lib/application.js:627:10)
+    at app.render (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/express/lib/application.js:574:3)
 Extra: {
-  "type": "calendar_index"
-}
---------------------------------------------------
-[2026-04-11 15:37:14] ERROR
-Method: GET
-URL: /calendar
-IP: ::1
-User ID: 2
-Query: {}
-Params: {}
-Body: {}
-Message: Table 'web_budget.calendar_events' doesn't exist
-Stack: Error: Table 'web_budget.calendar_events' doesn't exist
-    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
-    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
-    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
-Extra: {
-  "type": "calendar_index"
-}
---------------------------------------------------
-[2026-04-11 15:37:18] ERROR
-Method: GET
-URL: /calendar
-IP: ::1
-User ID: 2
-Query: {}
-Params: {}
-Body: {}
-Message: Table 'web_budget.calendar_events' doesn't exist
-Stack: Error: Table 'web_budget.calendar_events' doesn't exist
-    at PromisePool.execute (/Users/vtensionx/Documents/Programmer Files/Web-Budget/node_modules/mysql2/lib/promise/pool.js:54:22)
-    at /Users/vtensionx/Documents/Programmer Files/Web-Budget/server.js:507:38
-    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
-Extra: {
-  "type": "calendar_index"
+  "type": "global_error_handler"
 }
 --------------------------------------------------

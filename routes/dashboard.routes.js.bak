@@ -78,8 +78,7 @@ router.get('/', requireLogin, async (req, res) => {
       c.color,
       c.icon,
       COALESCE(tx.total_spent, 0) AS total_spent,
-      COALESCE(wl.wishlist_count, 0) AS wishlist_count,
-      COALESCE(wl.wishlist_amount, 0) AS wishlist_amount
+      COALESCE(wl.wishlist_count, 0) AS wishlist_count
     FROM categories c
     LEFT JOIN hidden_categories hc
       ON hc.category_id = c.id
@@ -98,12 +97,10 @@ router.get('/', requireLogin, async (req, res) => {
     LEFT JOIN (
       SELECT
         category_id,
-        COUNT(*) AS wishlist_count,
-        COALESCE(SUM(amount), 0) AS wishlist_amount
+        COUNT(*) AS wishlist_count
       FROM wishlist
       WHERE family_id = ?
         AND account_id = ?
-        AND status IN ('planned', 'postponed')
       GROUP BY category_id
     ) wl ON wl.category_id = c.id
     WHERE hc.category_id IS NULL
@@ -123,7 +120,6 @@ router.get('/', requireLogin, async (req, res) => {
     name: row.category_name,
     total: Number(row.total_spent || 0),
     wishlistCount: Number(row.wishlist_count || 0),
-    wishlistAmount: Number(row.wishlist_amount || 0),
     color: row.color || '#cccccc',
     icon: row.icon || 'bi-tag',
   }));
@@ -133,38 +129,25 @@ router.get('/', requireLogin, async (req, res) => {
     0
   );
 
-  const actualCategories = categoriesSummaryRaw
-    .filter((row) => row.total > 0)
-    .map((row) => ({
-      id: row.id,
-      name: row.name,
-      total: row.total,
-      color: row.color,
-      icon: row.icon,
-      percent:
-        totalExpensesAbs > 0
-          ? Math.round((row.total / totalExpensesAbs) * 1000) / 10
-          : 0,
-    }));
-
-  const plannedCategories = categoriesSummaryRaw
-    .filter((row) => row.wishlistCount > 0)
-    .map((row) => ({
-      id: row.id,
-      name: row.name,
-      wishlistCount: row.wishlistCount,
-      wishlistAmount: row.wishlistAmount,
-      color: row.color,
-      icon: row.icon,
-    }));
+  const categoriesSummary = categoriesSummaryRaw.map((row) => ({
+    id: row.id,
+    name: row.name,
+    total: row.total,
+    wishlistCount: row.wishlistCount,
+    color: row.color,
+    icon: row.icon,
+    percent:
+      totalExpensesAbs > 0
+        ? Math.round((row.total / totalExpensesAbs) * 1000) / 10
+        : 0,
+  }));
 
   res.render('dashboard/index', {
     user,
     balance,
     income,
     expense,
-    actualCategories,
-    plannedCategories,
+    categoriesSummary,
     totalExpensesAbs,
     activePage: 'dashboard',
   });

@@ -20,17 +20,14 @@
           <tbody>
             <% expenseCategories.forEach(function(c, index) { %>
               <tr id="row-<%= c.id %>">
-                <!-- Порядковый номер -->
                 <td class="text-muted small"><%= index + 1 %></td>
 
                 <td><%= c.name %></td>
 
-                <!-- Иконка -->
                 <td>
                   <i class="bi <%= c.icon || 'bi-tag' %> fs-5"></i>
                 </td>
 
-                <!-- Цвет -->
                 <td>
                   <span
                     class="rounded-circle d-inline-block border"
@@ -47,7 +44,6 @@
                 </td>
 
                 <td class="text-end text-nowrap">
-                  <!-- Редактировать -->
                   <button
                     type="button"
                     class="btn btn-outline-secondary btn-sm me-1"
@@ -57,12 +53,13 @@
                     <i class="bi bi-pencil"></i>
                   </button>
 
-                  <!-- Удалить -->
                   <form
                     method="POST"
                     action="/categories/delete"
                     class="d-inline"
-                    onsubmit="return confirm('Удалить категорию «<%= c.name %>» и все её транзакции для этой семьи?');"
+                    onsubmit="return confirm('<%= String(c.name).trim().toLowerCase() === 'wishlist'
+                      ? 'Удалить категорию «WishList»? Будут удалены все wishlist-карточки, которые находятся в категории WishList, а также связанные транзакции.'
+                      : `Удалить категорию «${c.name}» и все её транзакции для этой семьи?` %>');"
                   >
                     <input type="hidden" name="id" value="<%= c.id %>">
                     <button
@@ -76,7 +73,6 @@
                 </td>
               </tr>
 
-              <!-- строка с формой редактирования -->
               <tr id="edit-<%= c.id %>" style="display:none;" class="table-active">
                 <td colspan="6">
                   <%- include('_form_edit', {

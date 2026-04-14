@@ -1,22 +1,9 @@
-<% if (!wishlist || wishlist.length === 0) { %>
-  <div class="card border-0 shadow-sm">
-    <div class="card-body py-5 text-center">
-      <div class="mb-2 fs-3">🛍️</div>
-      <h5 class="mb-1">Пока нет карточек wishlist</h5>
-      <p class="text-muted mb-0">
-        Добавьте первую покупку через форму выше.
-      </p>
-    </div>
-  </div>
-<% } else { %>
-  <div class="row g-4">
+<div class="row g-4">
+  <% if (wishlist && wishlist.length > 0) { %>
     <% wishlist.forEach(item => { %>
       <div class="col-xl-3 col-lg-4 col-md-6">
         <div class="card border-0 shadow-sm h-100 wishlist-card">
-          <a
-            href="/wishlist/<%= item.id %>"
-            class="wishlist-card-image-link"
-          >
+          <a href="/wishlist/<%= item.id %>" class="wishlist-card-image-link">
             <% if (item.image_url) { %>
               <img
                 src="<%= item.image_url %>"
@@ -107,5 +94,35 @@
         </div>
       </div>
     <% }) %>
+  <% } else { %>
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body py-5 text-center">
+          <div class="mb-2 fs-3">🛍️</div>
+          <h5 class="mb-1">Пока нет карточек wishlist</h5>
+          <p class="text-muted mb-0">
+            Добавьте первую покупку через кнопку сверху или плитку с плюсом.
+          </p>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="col-xl-3 col-lg-4 col-md-6">
+    <button
+      type="button"
+      class="wishlist-add-tile"
+      data-bs-toggle="collapse"
+      data-bs-target="#wishlistAddCollapse"
+      aria-expanded="false"
+      aria-controls="wishlistAddCollapse"
+      onclick="setTimeout(() => document.getElementById('wishlistAddCollapse')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150)"
+    >
+      <span class="wishlist-add-tile-icon">
+        <i class="bi bi-plus-lg"></i>
+      </span>
+      <span class="wishlist-add-tile-title">Добавить карточку</span>
+      <span class="wishlist-add-tile-text">Быстро открыть форму создания</span>
+    </button>
   </div>
-<% } %>
+</div>

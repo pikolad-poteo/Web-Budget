@@ -1,29 +1,335 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+
+const wishlistUploadDir = path.join(__dirname, '..', 'public', 'uploads', 'wishlist');
+fs.mkdirSync(wishlistUploadDir, { recursive: true });
+
+const wishlistStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, wishlistUploadDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname || '').toLowerCase() || '.jpg';
+    const safeExt = ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext) ? ext : '.jpg';
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`);
+  }
+});
+
+function wishlistFileFilter(req, file, cb) {
+  if (!file.mimetype || !file.mimetype.startsWith('image/')) {
+    return cb(new Error('Можно загружать только изображения'));
+  }
+
+  cb(null, true);
+}
+
+const wishlistUpload = multer({
+  storage: wishlistStorage,
+  fileFilter: wishlistFileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024
+  }
+});
+
+function buildWishlistImagePublicPath(file) {
+  if (!file) return null;
+  return `/uploads/wishlist/${file.filename}`;
+}
+
+function isLocalWishlistUpload(imageUrl) {
+  return typeof imageUrl === 'string' && imageUrl.startsWith('/uploads/wishlist/');
+}
+
+function deleteLocalWishlistImage(imageUrl) {
+  if (!isLocalWishlistUpload(imageUrl)) return;
+
+  const localPath = path.join(__dirname, '..', 'public', imageUrl.replace(/^\/+/, ''));
+
+  fs.unlink(localPath, (err) => {
+    if (err && err.code !== 'ENOENT') {
+      console.error('Не удалось удалить локальное изображение wishlist:', err.message);
+    }
+  });
+}
 
 const pool = require('../src/db');
 const { requireLogin } = require('../src/middleware');
 const { ensureFamilyAndAccountForUser } = require('../src/auth');
 const { logError } = require('../src/logger');
 
-// Если есть upload middleware или helper-функции для wishlist,
-// их тоже подключим сюда.
-
-// Сюда переносим все /wishlist...
-
 function normalizeUrl(value) {
   const url = String(value || '').trim();
   if (!url) return null;
 
-  if (
-    url.startsWith('http://') ||
-    url.startsWith('https://')
-  ) {
+  if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
 
   return `https://${url}`;
 }
+
+function getTodayDateString() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function decodeHtmlEntities(value) {
+  return String(value || '')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
+function toAbsoluteUrl(candidate, baseUrl) {
+  try {
+    return new URL(candidate, baseUrl).toString();
+  } catch (err) {
+    return null;
+  }
+}
+
+async function ensureWishlistCategory(familyId) {
+  const [rows] = await pool.execute(
+    `
+    SELECT id
+    FROM categories
+    WHERE family_id = ?
+      AND type = 'expense'
+      AND LOWER(name) = 'wishlist'
+    LIMIT 1
+    `,
+    [familyId]
+  );
+
+  if (rows.length > 0) {
+    return rows[0].id;
+  }
+
+  const [insertRes] = await pool.execute(
+    `
+    INSERT INTO categories (family_id, name, type, color, icon)
+    VALUES (?, 'WishList', 'expense', '#8E44AD', 'bi-bag-heart')
+    `,
+    [familyId]
+  );
+
+  return insertRes.insertId;
+}
+
+async function extractImageFromStoreUrl(storeUrl) {
+  if (!storeUrl) return null;
+
+  try {
+    const response = await fetch(storeUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 Web-Budget Wishlist Preview Bot',
+        Accept: 'text/html,application/xhtml+xml'
+      }
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const html = await response.text();
+    if (!html) {
+      return null;
+    }
+
+    const patterns = [
+      /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+      /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i,
+      /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,
+      /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i,
+      /<img[^>]+src=["']([^"']+)["'][^>]*>/i
+    ];
+
+    for (const pattern of patterns) {
+      const match = html.match(pattern);
+
+      if (!match || !match[1]) {
+        continue;
+      }
+
+      const cleaned = decodeHtmlEntities(match[1].trim());
+      const absolute = toAbsoluteUrl(cleaned, storeUrl);
+
+      if (absolute && /^https?:\/\//i.test(absolute)) {
+        return absolute;
+      }
+    }
+
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function syncWishlistPurchase({
+  familyId,
+  accountId,
+  userId,
+  itemId,
+  status
+}) {
+  const [rows] = await pool.execute(
+    `
+    SELECT *
+    FROM wishlist
+    WHERE id = ?
+      AND family_id = ?
+      AND account_id = ?
+    LIMIT 1
+    `,
+    [itemId, familyId, accountId]
+  );
+
+  if (rows.length === 0) {
+    return;
+  }
+
+  const item = rows[0];
+
+  if (status === 'bought') {
+    const wishlistCategoryId = await ensureWishlistCategory(familyId);
+
+    if (item.linked_transaction_id) {
+      await pool.execute(
+        `
+        UPDATE transactions
+        SET
+          category_id = ?,
+          amount = ?,
+          date = ?,
+          description = ?,
+          who = ?
+        WHERE id = ?
+          AND family_id = ?
+          AND account_id = ?
+        `,
+        [
+          wishlistCategoryId,
+          -Math.abs(Number(item.amount)),
+          item.planned_date || getTodayDateString(),
+          item.title,
+          item.who || null,
+          item.linked_transaction_id,
+          familyId,
+          accountId
+        ]
+      );
+
+      await pool.execute(
+        `
+        UPDATE wishlist
+        SET category_id = ?
+        WHERE id = ?
+          AND family_id = ?
+          AND account_id = ?
+        `,
+        [wishlistCategoryId, itemId, familyId, accountId]
+      );
+
+      return;
+    }
+
+    const [txRes] = await pool.execute(
+      `
+      INSERT INTO transactions
+        (
+          family_id,
+          account_id,
+          user_id,
+          category_id,
+          amount,
+          date,
+          description,
+          who
+        )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        familyId,
+        accountId,
+        userId,
+        wishlistCategoryId,
+        -Math.abs(Number(item.amount)),
+        item.planned_date || getTodayDateString(),
+        item.title,
+        item.who || null
+      ]
+    );
+
+    await pool.execute(
+      `
+      UPDATE wishlist
+      SET
+        category_id = ?,
+        linked_transaction_id = ?
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      `,
+      [wishlistCategoryId, txRes.insertId, itemId, familyId, accountId]
+    );
+
+    return;
+  }
+
+  if (item.linked_transaction_id) {
+    await pool.execute(
+      `
+      DELETE FROM transactions
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      `,
+      [item.linked_transaction_id, familyId, accountId]
+    );
+
+    await pool.execute(
+      `
+      UPDATE wishlist
+      SET linked_transaction_id = NULL
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      `,
+      [itemId, familyId, accountId]
+    );
+  }
+}
+
+router.get('/wishlist/preview-image', requireLogin, async (req, res) => {
+  try {
+    const storeUrl = normalizeUrl(req.query.store_url);
+
+    if (!storeUrl) {
+      return res.json({
+        success: false,
+        image_url: null
+      });
+    }
+
+    const imageUrl = await extractImageFromStoreUrl(storeUrl);
+
+    return res.json({
+      success: !!imageUrl,
+      image_url: imageUrl || null
+    });
+  } catch (err) {
+    logError(err, req, { type: 'wishlist_preview_image' });
+
+    return res.status(500).json({
+      success: false,
+      image_url: null
+    });
+  }
+});
 
 router.get('/wishlist', requireLogin, async (req, res) => {
   const user = req.user;
@@ -230,7 +536,7 @@ router.get('/wishlist/:id', requireLogin, async (req, res) => {
   }
 });
 
-router.post('/wishlist', requireLogin, async (req, res) => {
+ router.post('/wishlist', requireLogin, wishlistUpload.single('image_file'), async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
@@ -253,11 +559,16 @@ router.post('/wishlist', requireLogin, async (req, res) => {
     description = String(description || '').trim() || null;
     planned_date = String(planned_date || '').trim() || null;
     who = String(who || '').trim() || null;
-    image_url = normalizeUrl(image_url);
     store_url = normalizeUrl(store_url);
 
+    if (req.file) {
+      image_url = buildWishlistImagePublicPath(req.file);
+    } else {
+      image_url = normalizeUrl(image_url);
+    }
+
     if (category_id === '' || category_id === 'none') {
-      category_id = null;
+      category_id = await ensureWishlistCategory(familyId);
     }
 
     priority = ['low', 'medium', 'high'].includes(priority) ? priority : 'medium';
@@ -314,13 +625,30 @@ router.post('/wishlist', requireLogin, async (req, res) => {
   }
 });
 
-router.post('/wishlist/update/:id', requireLogin, async (req, res) => {
+router.post('/wishlist/update/:id', requireLogin, wishlistUpload.single('image_file'), async (req, res) => {
   const user = req.user;
   const userId = user.id;
 
   try {
     const { familyId, accountId } = await ensureFamilyAndAccountForUser(userId);
     const { id } = req.params;
+    const [existingRows] = await pool.execute(
+      `
+      SELECT image_url
+      FROM wishlist
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      LIMIT 1
+      `,
+      [id, familyId, accountId]
+    );
+
+    if (existingRows.length === 0) {
+      return res.redirect('/wishlist');
+    }
+
+    const oldImageUrl = existingRows[0].image_url || null;
 
     let {
       title,
@@ -339,11 +667,10 @@ router.post('/wishlist/update/:id', requireLogin, async (req, res) => {
     description = String(description || '').trim() || null;
     planned_date = String(planned_date || '').trim() || null;
     who = String(who || '').trim() || null;
-    image_url = normalizeUrl(image_url);
     store_url = normalizeUrl(store_url);
 
     if (category_id === '' || category_id === 'none') {
-      category_id = null;
+      category_id = await ensureWishlistCategory(familyId);
     }
 
     priority = ['low', 'medium', 'high'].includes(priority) ? priority : 'medium';
@@ -355,6 +682,11 @@ router.post('/wishlist/update/:id', requireLogin, async (req, res) => {
 
     if (!title || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
       return res.redirect(`/wishlist/${id}`);
+    }
+    if (req.file) {
+      image_url = buildWishlistImagePublicPath(req.file);
+    } else {
+      image_url = normalizeUrl(image_url);
     }
 
     await pool.execute(
@@ -391,6 +723,17 @@ router.post('/wishlist/update/:id', requireLogin, async (req, res) => {
         accountId,
       ]
     );
+    if (req.file && oldImageUrl && oldImageUrl !== image_url) {
+      deleteLocalWishlistImage(oldImageUrl);
+    }
+
+    await syncWishlistPurchase({
+      familyId,
+      accountId,
+      userId,
+      itemId: id,
+      status
+    });
 
     res.redirect(`/wishlist/${id}`);
   } catch (err) {
@@ -427,6 +770,14 @@ router.post('/wishlist/status', requireLogin, async (req, res) => {
       [status, id, familyId, accountId]
     );
 
+    await syncWishlistPurchase({
+      familyId,
+      accountId,
+      userId,
+      itemId: id,
+      status
+    });
+
     res.redirect(`/wishlist/${id}`);
   } catch (err) {
     logError(err, req, { type: 'wishlist_status_update' });
@@ -449,6 +800,30 @@ router.post('/wishlist/delete', requireLogin, async (req, res) => {
       return res.redirect('/wishlist');
     }
 
+    const [rows] = await pool.execute(
+      `
+      SELECT linked_transaction_id, image_url
+      FROM wishlist
+      WHERE id = ?
+        AND family_id = ?
+        AND account_id = ?
+      LIMIT 1
+      `,
+      [id, familyId, accountId]
+    );
+
+    if (rows.length > 0 && rows[0].linked_transaction_id) {
+      await pool.execute(
+        `
+        DELETE FROM transactions
+        WHERE id = ?
+          AND family_id = ?
+          AND account_id = ?
+        `,
+        [rows[0].linked_transaction_id, familyId, accountId]
+      );
+    }
+
     await pool.execute(
       `
       DELETE FROM wishlist
@@ -458,6 +833,9 @@ router.post('/wishlist/delete', requireLogin, async (req, res) => {
       `,
       [id, familyId, accountId]
     );
+    if (rows.length > 0 && rows[0].image_url) {
+      deleteLocalWishlistImage(rows[0].image_url);
+    }
 
     res.redirect('/wishlist');
   } catch (err) {
