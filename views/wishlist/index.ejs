@@ -7,18 +7,6 @@
       Быстрый список желаний и планируемых покупок семьи.
     </p>
   </div>
-
-  <button
-    class="btn btn-dark"
-    type="button"
-    data-bs-toggle="collapse"
-    data-bs-target="#wishlistAddCollapse"
-    aria-expanded="false"
-    aria-controls="wishlistAddCollapse"
-  >
-    <i class="bi bi-plus-lg me-1"></i>
-    Добавить карточку
-  </button>
 </div>
 
 <div class="row g-3 mb-4">
@@ -52,14 +40,40 @@
   </div>
 </div>
 
-<div class="collapse mb-4" id="wishlistAddCollapse">
-  <%- include('_quick_add', { categories, members }) %>
-</div>
-
 <div class="mb-4">
   <%- include('_filters', { categories, filters }) %>
 </div>
 
 <%- include('_cards', { wishlist }) %>
+
+<div
+  class="modal fade"
+  id="wishlistAddModal"
+  tabindex="-1"
+  aria-labelledby="wishlistAddModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h5 class="modal-title" id="wishlistAddModalLabel">Новая карточка</h5>
+          <div class="text-muted small">Заполните только основное, остальное можно добавить позже.</div>
+        </div>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Закрыть"
+        ></button>
+      </div>
+
+      <div class="modal-body pt-3">
+        <%- include('_quick_add', { categories, members }) %>
+      </div>
+    </div>
+  </div>
+</div>
 
 <%- include('../partials/footer') %>

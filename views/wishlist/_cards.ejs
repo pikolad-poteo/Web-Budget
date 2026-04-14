@@ -101,7 +101,7 @@
           <div class="mb-2 fs-3">🛍️</div>
           <h5 class="mb-1">Пока нет карточек wishlist</h5>
           <p class="text-muted mb-0">
-            Добавьте первую покупку через кнопку сверху или плитку с плюсом.
+            Добавьте первую карточку через плитку с плюсом.
           </p>
         </div>
       </div>
@@ -112,17 +112,14 @@
     <button
       type="button"
       class="wishlist-add-tile"
-      data-bs-toggle="collapse"
-      data-bs-target="#wishlistAddCollapse"
-      aria-expanded="false"
-      aria-controls="wishlistAddCollapse"
-      onclick="setTimeout(() => document.getElementById('wishlistAddCollapse')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150)"
+      data-bs-toggle="modal"
+      data-bs-target="#wishlistAddModal"
+      aria-label="Добавить карточку"
+      title="Добавить карточку"
     >
       <span class="wishlist-add-tile-icon">
         <i class="bi bi-plus-lg"></i>
       </span>
-      <span class="wishlist-add-tile-title">Добавить карточку</span>
-      <span class="wishlist-add-tile-text">Быстро открыть форму создания</span>
     </button>
   </div>
 </div>
